@@ -1,0 +1,116 @@
+// Prisma schema — SaaS Gestion Inscriptions Scolaires
+// Schéma conforme à la section 5 de la spec
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model SuperAdmin {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  motDePasseHash  String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("super_admins")
+}
+
+model Ecole {
+  id                    String    @id @default(cuid())
+  nom                   String
+  nomPublic             String?
+  email                 String    @unique
+  motDePasseHash        String
+  ville                 String?
+  type                  String    @default("presentiel") // presentiel | en_ligne
+  slug                  String    @unique
+  waveBusinessApiKey    String?
+  waveActivationStatut  String    @default("en_attente") // en_attente | actif
+  visibleRecherche      Boolean   @default(true)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  classes               Classe[]
+
+  @@map("ecoles")
+}
+
+model Classe {
+  id                  String    @id @default(cuid())
+  ecoleId             String
+  nom                 String
+  niveauStandard      String?   // CI, CP, CE1, CE2, CM1, CM2, 6e, 5e, 4e, 3e, 2nde, 1ere, Tle, Autre
+  montantMensualite   Int
+  nbMois              Int
+  fraisInscription    Int       @default(0)
+  dateDebut           DateTime  @default(now())
+  jourEcheanceMensuel Int       @default(5)
+  reglesRappel        String    @default("{\"avantJours\":3,\"jourMeme\":true,\"apresJours\":3}")
+  slugInscription     String    @unique
+  statut              String    @default("actif") // actif | archive
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  ecole               Ecole     @relation(fields: [ecoleId], references: [id])
+  inscriptions        Inscription[]
+
+  @@map("classes")
+}
+
+model Inscription {
+  id                String    @id @default(cuid())
+  classeId          String
+  nomEleve          String
+  nomParent         String
+  telephoneParent   String
+  identifiantCourt  String?   @unique  // ex: EA-4821
+  dateInscription   DateTime  @default(now())
+  statut            String    @default("en_attente_confirmation") // en_attente_confirmation | confirme | refuse
+  lienSuiviUnique   String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  classe            Classe    @relation(fields: [classeId], references: [id])
+  echeances         Echeance[]
+
+  @@map("inscriptions")
+}
+
+model Echeance {
+  id              String    @id @default(cuid())
+  inscriptionId   String
+  type            String    // inscription | mensualite
+  numeroMois      Int?
+  montant         Int
+  dateLimite      DateTime
+  statut          String    @default("a_venir") // a_venir | du | paye | en_retard
+  lienPaiement    String?
+  waveEventId     String?
+  datePaiement    DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  inscription     Inscription @relation(fields: [inscriptionId], references: [id])
+  rappels         RappelLog[]
+
+  @@map("echeances")
+}
+
+model RappelLog {
+  id          String    @id @default(cuid())
+  echeanceId  String
+  dateEnvoi   DateTime  @default(now())
+  canal       String    @default("sms") // sms | email
+  contenu     String
+  statutEnvoi String    @default("envoye") // envoye | echoue | delivre
+  createdAt   DateTime  @default(now())
+
+  echeance    Echeance  @relation(fields: [echeanceId], references: [id])
+
+  @@map("rappels_log")
+}

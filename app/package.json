@@ -1,0 +1,42 @@
+{
+  "name": "gestion-inscriptions",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
+  "dependencies": {
+    "next": "^15.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@prisma/client": "^6.9.0",
+    "next-auth": "^4.24.11",
+    "bcryptjs": "^2.4.3",
+    "nanoid": "^5.1.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/bcryptjs": "^2.4.6",
+    "prisma": "^6.9.0",
+    "ts-node": "^10.9.2",
+    "tailwindcss": "^4.1.0",
+    "@tailwindcss/postcss": "^4.1.0",
+    "postcss": "^8.5.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.3.0",
+    "@eslint/eslintrc": "^3.0.0"
+  }
+}
