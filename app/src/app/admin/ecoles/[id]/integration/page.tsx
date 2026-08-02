@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function IntegrationPage({ params }: { params: { id: string } }) {
+export default function IntegrationPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
   const [waveBusinessApiKey, setWaveBusinessApiKey] = useState('');
   const [waveActivationStatut, setWaveActivationStatut] = useState('DESACTIVE');
@@ -16,7 +17,7 @@ export default function IntegrationPage({ params }: { params: { id: string } }) 
     setMessage('');
 
     try {
-      const res = await fetch(`/api/admin/ecoles/${params.id}/integration`, {
+      const res = await fetch(`/api/admin/ecoles/${id}/integration`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
