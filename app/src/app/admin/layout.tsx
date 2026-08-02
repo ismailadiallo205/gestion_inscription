@@ -74,10 +74,10 @@ export default function AdminLayout({
         <div className="p-4 border-t border-white/5">
           <div className="px-4 py-3 bg-navy-800/50 rounded-xl mb-2">
             <p className="text-sm font-medium text-white truncate">
-              {session.user?.name}
+              {session?.user?.name}
             </p>
             <p className="text-xs text-slate-400 truncate">
-              {session.user?.email}
+              {session?.user?.email}
             </p>
           </div>
           <button
