@@ -2,87 +2,122 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { envoyerSMS } from '@/lib/sms';
+import { generateIdentifiantCourt, generateSuiviToken } from '@/lib/utils';
+import { genererEcheancier } from '@/lib/echeancier';
+import { creerLienPaiement } from '@/lib/wave';
+import { envoyerSMSConfirmation } from '@/lib/sms';
 
+// POST /api/eleves/manuel — L'école ajoute directement un élève (sans passer par le formulaire public)
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== 'ECOLE') {
+    if (!session?.user || session.user.role !== 'ECOLE') {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
     }
 
-    const { nom, prenom, matricule, classeId, telephone, email } = await req.json();
+    const { nomEleve, nomParent, telephoneParent, classeId } = await req.json();
 
-    if (!nom || !prenom || !classeId) {
+    if (!nomEleve || !nomParent || !telephoneParent || !classeId) {
       return NextResponse.json({ error: 'Champs obligatoires manquants' }, { status: 400 });
     }
 
     // Vérifier que la classe appartient bien à l'école connectée
     const classe = await prisma.classe.findUnique({
       where: { id: classeId },
-      include: { ecole: true }
+      include: { ecole: true },
     });
 
     if (!classe || classe.ecoleId !== session.user.ecoleId) {
       return NextResponse.json({ error: 'Classe invalide' }, { status: 400 });
     }
 
-    // Créer l'élève
-    const eleve = await prisma.eleve.create({
+    // Réutiliser le lien de suivi existant si ce numéro a déjà un enfant inscrit
+    const inscriptionExistante = await prisma.inscription.findFirst({
+      where: { telephoneParent, lienSuiviUnique: { not: null } },
+    });
+    const lienSuiviUnique = inscriptionExistante?.lienSuiviUnique || generateSuiviToken();
+
+    // Générer un identifiant court unique
+    let identifiantCourt = generateIdentifiantCourt();
+    while (await prisma.inscription.findUnique({ where: { identifiantCourt } })) {
+      identifiantCourt = generateIdentifiantCourt();
+    }
+
+    // Une inscription créée directement par l'école est déjà confirmée
+    const inscription = await prisma.inscription.create({
       data: {
-        nom,
-        prenom,
-        matricule,
-        telephone,
-        email,
         classeId,
-        ecoleId: session.user.ecoleId,
-        statut: 'ACTIF',
+        nomEleve,
+        nomParent,
+        telephoneParent,
+        lienSuiviUnique,
+        identifiantCourt,
+        statut: 'confirme',
       },
     });
 
-    // Créer l'échéancier (10 mois par défaut pour l'exemple, ou utiliser la logique existante)
-    // Ici on crée un échéancier mensuel sur 10 mois divisant la scolarité totale
-    const montantMensuel = classe.scolarite / 10;
-    const dateDebut = new Date();
-    
-    // Générer un token unique pour le suivi
-    const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-
-    const echeancier = await prisma.echeancier.create({
-      data: {
-        eleveId: eleve.id,
-        montantTotal: classe.scolarite,
-        resteAPayer: classe.scolarite,
-        token,
-      },
+    // Générer l'échéancier à partir des paramètres réels de la classe
+    const echeancesGenerees = genererEcheancier({
+      montantMensualite: classe.montantMensualite,
+      nbMois: classe.nbMois,
+      fraisInscription: classe.fraisInscription,
+      dateDebut: classe.dateDebut,
+      jourEcheanceMensuel: classe.jourEcheanceMensuel,
     });
 
-    // Créer les 10 échéances
-    const echeances = [];
-    for (let i = 1; i <= 10; i++) {
-      const dateLimite = new Date(dateDebut);
-      dateLimite.setMonth(dateLimite.getMonth() + i);
-      
-      echeances.push({
-        echeancierId: echeancier.id,
-        montant: montantMensuel,
-        dateLimite: dateLimite,
-        statut: 'EN_ATTENTE',
-        mois: `Mois ${i}`,
+    const echeances = await Promise.all(
+      echeancesGenerees.map((e) =>
+        prisma.echeance.create({
+          data: {
+            inscriptionId: inscription.id,
+            type: e.type,
+            numeroMois: e.numeroMois,
+            montant: e.montant,
+            dateLimite: e.dateLimite,
+            statut: e.statut,
+          },
+        })
+      )
+    );
+
+    // Lien de paiement pour la première échéance
+    const premiereEcheance = echeances[0];
+    const lienPaiement = await creerLienPaiement({
+      montant: premiereEcheance.montant,
+      description: `${classe.ecole.nom} — ${classe.nom} — ${inscription.nomEleve}`,
+      ecoleApiKey: classe.ecole.waveBusinessApiKey || 'mock-key',
+    });
+
+    await prisma.echeance.update({
+      where: { id: premiereEcheance.id },
+      data: { lienPaiement: lienPaiement.url },
+    });
+
+    // SMS de confirmation au parent
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const lienSuivi = `${appUrl}/suivi/${lienSuiviUnique}`;
+
+    if (telephoneParent) {
+      await envoyerSMSConfirmation({
+        telephone: telephoneParent,
+        nomEleve,
+        identifiantCourt,
+        lienSuivi,
+        lienPaiement: lienPaiement.url,
+        montantPremierPaiement: premiereEcheance.montant,
       });
     }
 
-    await prisma.echeance.createMany({
-      data: echeances,
-    });
-
-    // Envoi du SMS si le téléphone est fourni
-    if (telephone) {
-       await envoyerSMS(telephone, `Bonjour, l'inscription de ${prenom} ${nom} a été enregistrée à ${classe.ecole.nom}. Suivez l'échéancier ici: https://edupay.app/suivi/${token}`);
-    }
-
-    return NextResponse.json({ success: true, eleve, token });
+    return NextResponse.json(
+      {
+        success: true,
+        inscription,
+        identifiantCourt,
+        lienSuivi,
+        nbEcheances: echeances.length,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Erreur inscription manuelle:', error);
     return NextResponse.json(
