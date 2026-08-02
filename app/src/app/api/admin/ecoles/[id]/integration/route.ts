@@ -5,9 +5,10 @@ import { authOptions } from '@/lib/auth';
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
     if (!session || session.user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
@@ -16,7 +17,7 @@ export async function POST(
     const { waveBusinessApiKey, waveActivationStatut } = await req.json();
 
     const ecole = await prisma.ecole.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         waveBusinessApiKey,
         waveActivationStatut,
