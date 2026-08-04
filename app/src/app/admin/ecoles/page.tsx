@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { X } from "lucide-react";
 
 type Ecole = {
   id: string;
@@ -75,8 +76,8 @@ export default function AdminEcolesPage() {
     <div className="max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white">Écoles Inscrites</h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-ink-900">Écoles Inscrites</h1>
+          <p className="text-ink-400 text-sm mt-1">
             Gérez toutes les écoles utilisant SkooPay
           </p>
         </div>
@@ -91,14 +92,14 @@ export default function AdminEcolesPage() {
       {/* Modal Ajout École */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-navy-900 border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
-            <div className="p-6 border-b border-white/5 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">Nouvelle École</h2>
+          <div className="bg-surface border border-border rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="p-6 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-bold text-ink-900">Nouvelle École</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-ink-400 hover:text-ink-900 transition-colors"
               >
-                ✕
+                <X size={18} strokeWidth={2} />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -109,7 +110,7 @@ export default function AdminEcolesPage() {
               )}
               
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Nom de l'école</label>
+                <label className="block text-sm font-medium text-ink-600 mb-2">Nom de l'école</label>
                 <input
                   type="text"
                   required
@@ -121,7 +122,7 @@ export default function AdminEcolesPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Email (Contact)</label>
+                <label className="block text-sm font-medium text-ink-600 mb-2">Email (Contact)</label>
                 <input
                   type="email"
                   required
@@ -133,7 +134,7 @@ export default function AdminEcolesPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Mot de passe provisoire</label>
+                <label className="block text-sm font-medium text-ink-600 mb-2">Mot de passe provisoire</label>
                 <input
                   type="text"
                   required
@@ -146,7 +147,7 @@ export default function AdminEcolesPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Type</label>
+                  <label className="block text-sm font-medium text-ink-600 mb-2">Type</label>
                   <select
                     className="input-field"
                     value={formData.type}
@@ -157,7 +158,7 @@ export default function AdminEcolesPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Ville</label>
+                  <label className="block text-sm font-medium text-ink-600 mb-2">Ville</label>
                   <input
                     type="text"
                     className="input-field"
@@ -172,7 +173,7 @@ export default function AdminEcolesPage() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-2.5 rounded-xl font-medium text-slate-300 hover:bg-white/5 border border-transparent hover:border-white/10 transition-all"
+                  className="flex-1 px-4 py-2.5 rounded-xl font-medium text-ink-600 hover:bg-surface-soft border border-transparent hover:border-border transition-all"
                 >
                   Annuler
                 </button>
@@ -183,7 +184,7 @@ export default function AdminEcolesPage() {
                 >
                   {submitting ? (
                     <>
-                      <div className="spinner border-white/30 border-t-white" style={{ width: 16, height: 16 }} />
+                      <div className="spinner border-border border-t-white" style={{ width: 16, height: 16 }} />
                       Création...
                     </>
                   ) : (
@@ -199,8 +200,8 @@ export default function AdminEcolesPage() {
 
       <div className="glass-card-static overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-300">
-            <thead className="text-xs uppercase bg-white/5 text-slate-400 border-b border-white/5">
+          <table className="w-full text-left text-sm text-ink-600">
+            <thead className="text-xs uppercase bg-surface-soft text-ink-400 border-b border-border">
               <tr>
                 <th className="px-6 py-4 font-medium">Nom de l'école</th>
                 <th className="px-6 py-4 font-medium">Contact</th>
@@ -212,7 +213,7 @@ export default function AdminEcolesPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-slate-400">
+                  <td colSpan={5} className="px-6 py-8 text-center text-ink-400">
                     <div className="flex justify-center mb-2">
                       <div className="spinner border-red-500 border-t-red-200" style={{ width: 24, height: 24 }} />
                     </div>
@@ -221,7 +222,7 @@ export default function AdminEcolesPage() {
                 </tr>
               ) : ecoles.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-slate-400">
+                  <td colSpan={5} className="px-6 py-8 text-center text-ink-400">
                     Aucune école inscrite.
                   </td>
                 </tr>
@@ -229,11 +230,11 @@ export default function AdminEcolesPage() {
                 ecoles.map((ecole) => (
                   <tr
                     key={ecole.id}
-                    className="border-b border-white/5 hover:bg-white/[0.02] transition-colors"
+                    className="border-b border-border hover:bg-surface-soft transition-colors"
                   >
                     <td className="px-6 py-4">
-                      <div className="font-medium text-white">{ecole.nom}</div>
-                      <div className="text-xs text-slate-500 capitalize">{ecole.type.replace("_", " ")}</div>
+                      <div className="font-medium text-ink-900">{ecole.nom}</div>
+                      <div className="text-xs text-ink-400 capitalize">{ecole.type.replace("_", " ")}</div>
                     </td>
                     <td className="px-6 py-4">{ecole.email}</td>
                     <td className="px-6 py-4">{ecole._count.classes}</td>
@@ -242,13 +243,13 @@ export default function AdminEcolesPage() {
                         className={`px-2.5 py-1 rounded-full text-xs font-medium border ${
                           ecole.waveActivationStatut === "actif"
                             ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                            : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                            : "bg-blue-100 text-blue-600 border-blue-500/20"
                         }`}
                       >
                         {ecole.waveActivationStatut === "actif" ? "Actif" : "En attente"}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-slate-400">
+                    <td className="px-6 py-4 text-ink-400">
                       {new Date(ecole.createdAt).toLocaleDateString("fr-FR")}
                     </td>
                   </tr>

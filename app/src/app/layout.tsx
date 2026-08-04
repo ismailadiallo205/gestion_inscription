@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "EduPay — Gestion des inscriptions et paiements scolaires",
+  title: "KlyroEdu — Gestion des inscriptions et paiements scolaires",
   description:
     "Simplifiez les inscriptions, mensualités et paiements de votre école. Les parents paient via Wave, suivent leur solde en un clic. Aucune configuration compliquée.",
   keywords: [
@@ -12,6 +12,7 @@ export const metadata: Metadata = {
     "mensualité",
     "gestion école",
     "FCFA",
+    "KlyroEdu",
   ],
 };
 
@@ -32,7 +33,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@600;700;800&display=swap"
           rel="stylesheet"
         />
       </head>

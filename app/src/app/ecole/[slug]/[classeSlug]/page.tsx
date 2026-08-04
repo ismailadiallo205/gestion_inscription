@@ -74,7 +74,7 @@ export default function InscriptionParentPage() {
   if (loading) {
     return (
       <div className="min-h-screen hero-gradient flex items-center justify-center">
-        <div className="spinner" style={{ width: 32, height: 32 }} />
+        <div className="spinner-dark" style={{ width: 32, height: 32 }} />
       </div>
     );
   }
@@ -83,24 +83,24 @@ export default function InscriptionParentPage() {
     return (
       <div className="min-h-screen hero-gradient flex items-center justify-center p-6">
         <div className="max-w-md w-full text-center animate-fade-in">
-          <div className="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center text-4xl mx-auto mb-6">
+          <div className="w-20 h-20 rounded-full flex items-center justify-center text-4xl mx-auto mb-6" style={{ background: "var(--color-paye-bg)", border: "2px solid var(--color-paye)" }}>
             ✓
           </div>
-          <h1 className="text-2xl font-bold text-white mb-3">
+          <h1 className="text-2xl font-bold mb-3" style={{ color: "var(--color-ink-900)" }}>
             Dossier envoyé !
           </h1>
-          <p className="text-slate-400 mb-2">
+          <p className="mb-2" style={{ color: "var(--color-ink-600)" }}>
             Le dossier d&apos;inscription de{" "}
-            <span className="text-white font-medium">{nomEleve}</span> a été
+            <span className="font-medium" style={{ color: "var(--color-ink-900)" }}>{nomEleve}</span> a été
             envoyé à{" "}
-            <span className="text-white font-medium">
+            <span className="font-medium" style={{ color: "var(--color-ink-900)" }}>
               {classe?.ecole.nomPublic || classe?.ecole.nom}
             </span>
             .
           </p>
-          <p className="text-slate-500 text-sm mb-8">
+          <p className="text-sm mb-8" style={{ color: "var(--color-ink-400)" }}>
             Vous recevrez un SMS de confirmation sur le{" "}
-            <span className="text-white">{telephoneParent}</span> dès que
+            <span style={{ color: "var(--color-ink-900)" }}>{telephoneParent}</span> dès que
             l&apos;école aura validé le dossier.
           </p>
           <Link href="/" className="btn-secondary">
@@ -116,8 +116,8 @@ export default function InscriptionParentPage() {
       <div className="min-h-screen hero-gradient flex items-center justify-center">
         <div className="text-center">
           <div className="text-4xl mb-4">🔍</div>
-          <p className="text-lg text-slate-300 mb-2">Classe non trouvée</p>
-          <p className="text-sm text-slate-500 mb-6">
+          <p className="text-lg mb-2" style={{ color: "var(--color-ink-900)" }}>Classe non trouvée</p>
+          <p className="text-sm mb-6" style={{ color: "var(--color-ink-400)" }}>
             {erreur || "Cette classe n'existe pas ou n'est plus active"}
           </p>
           <Link href="/" className="btn-primary">
@@ -136,11 +136,9 @@ export default function InscriptionParentPage() {
       {/* Navbar */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
         <Link href="/" className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-navy-950 font-bold text-sm shadow-lg shadow-amber-500/20">
-            S
-          </div>
-          <span className="text-lg font-bold text-white tracking-tight">
-            Skoo<span className="text-amber-400">Pay</span>
+          <img src="/logo.png" alt="KlyroEdu" className="h-9 w-auto object-contain" />
+          <span className="text-lg font-bold tracking-tight" style={{ color: "var(--color-ink-900)" }}>
+            Klyro<span style={{ color: "var(--color-blue-500)" }}>Edu</span>
           </span>
         </Link>
       </nav>
@@ -148,18 +146,18 @@ export default function InscriptionParentPage() {
       <div className="px-6 py-12 max-w-lg mx-auto">
         {/* Info classe */}
         <div className="text-center mb-8 animate-fade-in">
-          <p className="text-sm text-amber-400 font-medium mb-2">
+          <p className="text-sm font-medium mb-2" style={{ color: "var(--color-blue-600)" }}>
             {classe.ecole.nomPublic || classe.ecole.nom}
           </p>
-          <h1 className="text-2xl font-bold text-white mb-2">
+          <h1 className="text-2xl font-bold mb-2" style={{ color: "var(--color-ink-900)" }}>
             Inscription — {classe.nom}
           </h1>
-          <div className="flex items-center justify-center gap-3 text-sm text-slate-400">
+          <div className="flex items-center justify-center gap-3 text-sm" style={{ color: "var(--color-ink-600)" }}>
             <span>{formatMontant(classe.montantMensualite)}/mois</span>
             <span>·</span>
             <span>{classe.nbMois} mois</span>
             <span>·</span>
-            <span className="text-amber-400 font-medium">
+            <span className="font-medium" style={{ color: "var(--color-blue-600)" }}>
               Total {formatMontant(total)}
             </span>
           </div>
@@ -171,12 +169,12 @@ export default function InscriptionParentPage() {
           className="glass-card-static p-8 animate-fade-in"
           style={{ animationDelay: "100ms" }}
         >
-          <h2 className="text-lg font-semibold text-white mb-6">
+          <h2 className="text-lg font-semibold mb-6" style={{ color: "var(--color-ink-900)" }}>
             Informations de l&apos;élève
           </h2>
 
           {erreur && (
-            <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            <div className="mb-4 p-3 rounded-xl border text-sm" style={{ background: "var(--color-retard-bg)", borderColor: "rgba(194, 43, 58, 0.2)", color: "var(--color-retard)" }}>
               {erreur}
             </div>
           )}
@@ -185,7 +183,8 @@ export default function InscriptionParentPage() {
             <div>
               <label
                 htmlFor="nom-eleve"
-                className="block text-sm font-medium text-slate-300 mb-2"
+                className="block text-sm font-medium mb-2"
+                style={{ color: "var(--color-ink-600)" }}
               >
                 Nom complet de l&apos;élève *
               </label>
@@ -203,7 +202,8 @@ export default function InscriptionParentPage() {
             <div>
               <label
                 htmlFor="nom-parent"
-                className="block text-sm font-medium text-slate-300 mb-2"
+                className="block text-sm font-medium mb-2"
+                style={{ color: "var(--color-ink-600)" }}
               >
                 Nom du parent / tuteur *
               </label>
@@ -221,7 +221,8 @@ export default function InscriptionParentPage() {
             <div>
               <label
                 htmlFor="telephone"
-                className="block text-sm font-medium text-slate-300 mb-2"
+                className="block text-sm font-medium mb-2"
+                style={{ color: "var(--color-ink-600)" }}
               >
                 Numéro de téléphone *
               </label>
@@ -234,7 +235,7 @@ export default function InscriptionParentPage() {
                 className="glass-input"
                 required
               />
-              <p className="text-xs text-slate-500 mt-2">
+              <p className="text-xs mt-2" style={{ color: "var(--color-ink-400)" }}>
                 Ce numéro recevra les SMS de suivi et les liens de paiement
               </p>
             </div>
@@ -253,7 +254,7 @@ export default function InscriptionParentPage() {
             )}
           </button>
 
-          <p className="text-xs text-slate-500 text-center mt-4">
+          <p className="text-xs text-center mt-4" style={{ color: "var(--color-ink-400)" }}>
             L&apos;école vérifiera votre dossier et vous recevrez un SMS de
             confirmation avec votre lien de paiement.
           </p>

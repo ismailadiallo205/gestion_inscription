@@ -153,7 +153,7 @@ export default function NouveauManuelPage() {
             <button
               type="submit"
               disabled={loading || classes.length === 0}
-              className="px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors disabled:opacity-50"
+              className="px-6 py-3 bg-emerald-600 text-ink-900 rounded-xl hover:bg-emerald-700 transition-colors disabled:opacity-50"
             >
               {loading ? 'Enregistrement...' : 'Enregistrer l\'élève et créer l\'échéancier'}
             </button>

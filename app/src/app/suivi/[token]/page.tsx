@@ -37,7 +37,7 @@ export default async function SuiviParentPage({ params }: PageProps) {
       {/* Navbar */}
       <nav className="flex items-center justify-center px-6 py-4">
         <Link href="/" className="flex items-center">
-          <img src="/logo.png" alt="EduPay" className="h-9 w-auto object-contain" />
+          <img src="/logo.png" alt="KlyroEdu" className="h-9 w-auto object-contain" />
         </Link>
       </nav>
 
@@ -86,7 +86,7 @@ export default async function SuiviParentPage({ params }: PageProps) {
                           inscription.classe.ecole.nom}{" "}
                         — {inscription.classe.nom}
                       </p>
-                      <span className="text-xs text-amber-400 font-mono bg-amber-500/10 px-2 py-0.5 rounded-md mt-2 inline-block">
+                      <span className="text-xs font-mono px-2 py-0.5 rounded-md mt-2 inline-block" style={{ color: "var(--color-blue-700)", background: "var(--color-blue-100)" }}>
                         {inscription.identifiantCourt}
                       </span>
                     </div>
@@ -161,7 +161,7 @@ export default async function SuiviParentPage({ params }: PageProps) {
                 {/* Bouton payer */}
                 {prochainePaiement && (
                   <div className="px-6 pb-6">
-                    <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/15 mb-3">
+                    <div className="p-4 rounded-xl mb-3" style={{ background: "var(--color-blue-50)", border: "1px solid var(--color-blue-100)" }}>
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm text-slate-300">
@@ -175,7 +175,7 @@ export default async function SuiviParentPage({ params }: PageProps) {
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-lg font-bold text-amber-400">
+                          <p className="text-lg font-bold" style={{ color: "var(--color-blue-600)" }}>
                             {formatMontant(prochainePaiement.montant)}
                           </p>
                         </div>
@@ -208,7 +208,7 @@ export default async function SuiviParentPage({ params }: PageProps) {
 
         {/* Footer */}
         <div className="text-center mt-8 text-xs text-slate-600">
-          <p>Propulsé par EduPay</p>
+          <p>Propulsé par KlyroEdu</p>
           <p className="mt-1">Lien de suivi personnel — ne le partagez pas</p>
         </div>
       </div>

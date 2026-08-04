@@ -86,7 +86,7 @@ export default function IntegrationPage({ params }: { params: Promise<{ id: stri
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors disabled:opacity-50"
+              className="px-6 py-3 bg-emerald-600 text-ink-900 rounded-xl hover:bg-emerald-700 transition-colors disabled:opacity-50"
             >
               {loading ? 'Enregistrement...' : 'Enregistrer la configuration'}
             </button>

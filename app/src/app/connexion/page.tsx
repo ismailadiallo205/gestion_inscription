@@ -42,21 +42,21 @@ export default function ConnexionPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-3 group">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-navy-950 font-bold text-xl shadow-lg shadow-amber-500/20">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/20">
               S
             </div>
-            <span className="text-2xl font-bold text-white tracking-tight">
-              Skoo<span className="text-amber-400">Pay</span>
+            <span className="text-2xl font-bold text-ink-900 tracking-tight">
+              Skoo<span className="text-blue-600">Pay</span>
             </span>
           </Link>
-          <p className="text-slate-400 mt-4 text-sm">
+          <p className="text-ink-400 mt-4 text-sm">
             Connectez-vous à votre espace école
           </p>
         </div>
 
         {/* Formulaire */}
         <form onSubmit={handleSubmit} className="glass-card-static p-8">
-          <h1 className="text-xl font-bold text-white mb-6">Connexion</h1>
+          <h1 className="text-xl font-bold text-ink-900 mb-6">Connexion</h1>
 
           {erreur && (
             <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
@@ -68,7 +68,7 @@ export default function ConnexionPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-slate-300 mb-2"
+                className="block text-sm font-medium text-ink-600 mb-2"
               >
                 Email
               </label>
@@ -86,7 +86,7 @@ export default function ConnexionPage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-slate-300 mb-2"
+                className="block text-sm font-medium text-ink-600 mb-2"
               >
                 Mot de passe
               </label>
@@ -115,11 +115,11 @@ export default function ConnexionPage() {
             )}
           </button>
 
-          <p className="text-center text-sm text-slate-400 mt-6">
+          <p className="text-center text-sm text-ink-400 mt-6">
             Pas encore de compte ?{" "}
             <Link
               href="/inscription"
-              className="text-amber-400 hover:text-amber-300 font-medium transition-colors"
+              className="text-blue-600 hover:text-blue-600 font-medium transition-colors"
             >
               Inscrire mon école
             </Link>

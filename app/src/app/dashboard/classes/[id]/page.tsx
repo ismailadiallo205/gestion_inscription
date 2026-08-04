@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { formatMontant, formatDate, labelStatut, couleurStatut } from "@/lib/utils";
+import { ArrowLeft, Check, Copy, ClipboardList, X, GraduationCap } from "lucide-react";
 
 interface ClasseDetail {
   id: string;
@@ -84,7 +85,7 @@ export default function ClasseDetailPage() {
   if (!classe) {
     return (
       <div className="empty-state">
-        <p className="text-lg text-slate-300">Classe non trouvée</p>
+        <p className="text-lg text-ink-600">Classe non trouvée</p>
       </div>
     );
   }
@@ -100,14 +101,14 @@ export default function ClasseDetailPage() {
       <div className="mb-6">
         <Link
           href="/dashboard/classes"
-          className="text-sm text-slate-400 hover:text-amber-400 transition-colors mb-4 inline-block"
+          className="text-sm text-ink-400 hover:text-blue-600 transition-colors mb-4 inline-flex items-center gap-1"
         >
-          ← Retour aux classes
+          <ArrowLeft size={14} strokeWidth={2} /> Retour aux classes
         </Link>
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">{classe.nom}</h1>
-            <p className="text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-ink-900">{classe.nom}</h1>
+            <p className="text-ink-400 text-sm mt-1">
               {formatMontant(classe.montantMensualite)}/mois × {classe.nbMois}{" "}
               mois
               {classe.fraisInscription > 0 &&
@@ -121,15 +122,19 @@ export default function ClasseDetailPage() {
             }`}
             id="btn-copy-link"
           >
-            {copied ? "✓ Copié !" : "📋 Copier le lien d'inscription"}
+            {copied ? (
+              <span className="inline-flex items-center gap-1.5"><Check size={14} strokeWidth={2} /> Copié !</span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5"><Copy size={14} strokeWidth={2} /> Copier le lien d'inscription</span>
+            )}
           </button>
         </div>
       </div>
 
       {/* Lien d'inscription */}
       <div className="glass-card-static p-4 mb-6 flex items-center gap-3">
-        <span className="text-sm text-slate-400 shrink-0">Lien direct :</span>
-        <code className="text-sm text-amber-400 bg-navy-800/50 px-3 py-1.5 rounded-lg flex-1 overflow-x-auto">
+        <span className="text-sm text-ink-400 shrink-0">Lien direct :</span>
+        <code className="text-sm text-blue-600 bg-surface-soft/50 px-3 py-1.5 rounded-lg flex-1 overflow-x-auto">
           {typeof window !== "undefined"
             ? `${window.location.origin}/ecole/${classe.ecole.slug}/${classe.slugInscription}`
             : `/ecole/${classe.ecole.slug}/${classe.slugInscription}`}
@@ -138,10 +143,10 @@ export default function ClasseDetailPage() {
 
       {/* Dossiers en attente */}
       {enAttente.length > 0 && (
-        <div className="glass-card-static p-6 mb-6 border-amber-500/20">
-          <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-            📋 Dossiers en attente
-            <span className="badge bg-amber-500/10 text-amber-400">
+        <div className="glass-card-static p-6 mb-6 border-blue-500/20">
+          <h2 className="text-lg font-semibold text-ink-900 mb-4 flex items-center gap-2">
+            <ClipboardList size={18} strokeWidth={2} /> Dossiers en attente
+            <span className="badge bg-blue-100 text-blue-600">
               {enAttente.length}
             </span>
           </h2>
@@ -149,29 +154,29 @@ export default function ClasseDetailPage() {
             {enAttente.map((insc) => (
               <div
                 key={insc.id}
-                className="flex items-center justify-between p-4 rounded-xl bg-navy-800/50 border border-white/5"
+                className="flex items-center justify-between p-4 rounded-xl bg-surface-soft/50 border border-border"
               >
                 <div>
-                  <p className="font-medium text-white">{insc.nomEleve}</p>
-                  <p className="text-sm text-slate-400">
+                  <p className="font-medium text-ink-900">{insc.nomEleve}</p>
+                  <p className="text-sm text-ink-400">
                     {insc.nomParent} · {insc.telephoneParent}
                   </p>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-ink-400 mt-1">
                     {formatDate(insc.dateInscription)}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleAction(insc.id, "confirmer")}
-                    className="btn-success btn-sm"
+                    className="btn-success btn-sm inline-flex items-center gap-1.5"
                   >
-                    ✓ Confirmer
+                    <Check size={14} strokeWidth={2} /> Confirmer
                   </button>
                   <button
                     onClick={() => handleAction(insc.id, "refuser")}
-                    className="btn-danger btn-sm"
+                    className="btn-danger btn-sm inline-flex items-center gap-1.5"
                   >
-                    ✕ Refuser
+                    <X size={14} strokeWidth={2} /> Refuser
                   </button>
                 </div>
               </div>
@@ -182,16 +187,16 @@ export default function ClasseDetailPage() {
 
       {/* Tableau des élèves confirmés */}
       <div className="glass-card-static overflow-hidden">
-        <div className="p-6 border-b border-white/5">
-          <h2 className="text-lg font-semibold text-white">
+        <div className="p-6 border-b border-border">
+          <h2 className="text-lg font-semibold text-ink-900">
             Élèves inscrits ({confirmes.length})
           </h2>
         </div>
 
         {confirmes.length === 0 ? (
           <div className="empty-state py-12">
-            <div className="text-3xl mb-2">👩‍🎓</div>
-            <p className="text-sm text-slate-400">
+            <div className="empty-state-icon"><GraduationCap size={24} strokeWidth={1.75} /></div>
+            <p className="text-sm text-ink-400">
               Aucun élève confirmé pour cette classe
             </p>
           </div>
@@ -221,20 +226,20 @@ export default function ClasseDetailPage() {
                   return (
                     <tr key={insc.id}>
                       <td>
-                        <span className="text-xs text-amber-400 font-mono bg-amber-500/10 px-2 py-1 rounded-lg">
+                        <span className="text-xs text-blue-600 font-mono bg-blue-100 px-2 py-1 rounded-lg">
                           {insc.identifiantCourt || "—"}
                         </span>
                       </td>
-                      <td className="font-medium text-white">
+                      <td className="font-medium text-ink-900">
                         {insc.nomEleve}
                       </td>
-                      <td className="text-slate-300">{insc.nomParent}</td>
-                      <td className="text-slate-400 font-mono text-sm">
+                      <td className="text-ink-600">{insc.nomParent}</td>
+                      <td className="text-ink-400 font-mono text-sm">
                         {insc.telephoneParent}
                       </td>
                       <td>
                         <div className="flex items-center gap-2">
-                          <div className="w-20 h-2 rounded-full bg-navy-700 overflow-hidden">
+                          <div className="w-20 h-2 rounded-full bg-surface-soft overflow-hidden">
                             <div
                               className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400"
                               style={{
@@ -244,7 +249,7 @@ export default function ClasseDetailPage() {
                               }}
                             />
                           </div>
-                          <span className="text-xs text-slate-400">
+                          <span className="text-xs text-ink-400">
                             {payes}/{total}
                           </span>
                         </div>

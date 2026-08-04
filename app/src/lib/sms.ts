@@ -40,7 +40,7 @@ export async function envoyerSMSReceptionDossier(params: {
   nomEcole: string;
   nomClasse: string;
 }): Promise<SMSResult> {
-  const message = `Bonjour ! Le dossier d'inscription de ${params.nomEleve} pour la classe ${params.nomClasse} à ${params.nomEcole} a bien été reçu. Vous serez informé(e) dès sa confirmation. — EduPay`;
+  const message = `Bonjour ! Le dossier d'inscription de ${params.nomEleve} pour la classe ${params.nomClasse} à ${params.nomEcole} a bien été reçu. Vous serez informé(e) dès sa confirmation. — KlyroEdu`;
 
   return envoyerSMS({ telephone: params.telephone, message });
 }
@@ -59,7 +59,7 @@ export async function envoyerSMSConfirmation(params: {
   const montantFormate = new Intl.NumberFormat("fr-FR").format(
     params.montantPremierPaiement
   );
-  const message = `✅ Inscription confirmée pour ${params.nomEleve} (${params.identifiantCourt}). Suivez vos paiements ici : ${params.lienSuivi}. Premier paiement : ${montantFormate} FCFA → ${params.lienPaiement} — EduPay`;
+  const message = `✅ Inscription confirmée pour ${params.nomEleve} (${params.identifiantCourt}). Suivez vos paiements ici : ${params.lienSuivi}. Premier paiement : ${montantFormate} FCFA → ${params.lienPaiement} — KlyroEdu`;
 
   return envoyerSMS({ telephone: params.telephone, message });
 }
@@ -78,11 +78,11 @@ export async function envoyerRappelPaiement(params: {
   let message: string;
 
   if (params.joursRestants > 0) {
-    message = `Rappel : paiement de ${montantFormate} FCFA pour ${params.nomEleve} dans ${params.joursRestants} jour(s). Payez ici : ${params.lienPaiement} — EduPay`;
+    message = `Rappel : paiement de ${montantFormate} FCFA pour ${params.nomEleve} dans ${params.joursRestants} jour(s). Payez ici : ${params.lienPaiement} — KlyroEdu`;
   } else if (params.joursRestants === 0) {
-    message = `⚠️ Échéance aujourd'hui : ${montantFormate} FCFA pour ${params.nomEleve}. Payez maintenant : ${params.lienPaiement} — EduPay`;
+    message = `⚠️ Échéance aujourd'hui : ${montantFormate} FCFA pour ${params.nomEleve}. Payez maintenant : ${params.lienPaiement} — KlyroEdu`;
   } else {
-    message = `🔴 Retard de paiement : ${montantFormate} FCFA pour ${params.nomEleve} (${Math.abs(params.joursRestants)} jour(s) de retard). Régularisez ici : ${params.lienPaiement} — EduPay`;
+    message = `🔴 Retard de paiement : ${montantFormate} FCFA pour ${params.nomEleve} (${Math.abs(params.joursRestants)} jour(s) de retard). Régularisez ici : ${params.lienPaiement} — KlyroEdu`;
   }
 
   return envoyerSMS({ telephone: params.telephone, message });

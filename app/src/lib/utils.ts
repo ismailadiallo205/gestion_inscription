@@ -15,7 +15,7 @@ export function slugify(text: string): string {
  * Génère un identifiant court pour un élève (ex: EA-4821)
  */
 export function generateIdentifiantCourt(): string {
-  const prefix = "EA";
+  const prefix = "KE";
   const num = Math.floor(1000 + Math.random() * 9000);
   return `${prefix}-${num}`;
 }

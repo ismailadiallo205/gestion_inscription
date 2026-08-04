@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { NIVEAUX_STANDARD, formatMontant } from "@/lib/utils";
 import { calculerMontantTotal } from "@/lib/echeancier";
+import { ArrowLeft, Settings, Lightbulb } from "lucide-react";
 
 export default function NouvelleClassePage() {
   const router = useRouter();
@@ -67,12 +68,12 @@ export default function NouvelleClassePage() {
       <div className="mb-8">
         <Link
           href="/dashboard/classes"
-          className="text-sm text-slate-400 hover:text-amber-400 transition-colors mb-4 inline-block"
+          className="text-sm text-ink-400 hover:text-blue-600 transition-colors mb-4 inline-flex items-center gap-1"
         >
-          ← Retour aux classes
+          <ArrowLeft size={14} strokeWidth={2} /> Retour aux classes
         </Link>
-        <h1 className="text-2xl font-bold text-white">Nouvelle classe</h1>
-        <p className="text-slate-400 text-sm mt-1">
+        <h1 className="text-2xl font-bold text-ink-900">Nouvelle classe</h1>
+        <p className="text-ink-400 text-sm mt-1">
           Seulement 3 informations pour démarrer
         </p>
       </div>
@@ -86,8 +87,8 @@ export default function NouvelleClassePage() {
 
         {/* 3 champs obligatoires */}
         <div className="glass-card-static p-8 mb-6 animate-fade-in">
-          <h2 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 text-sm font-bold">
+          <h2 className="text-lg font-semibold text-ink-900 mb-6 flex items-center gap-2">
+            <span className="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 text-sm font-bold">
               1
             </span>
             Informations essentielles
@@ -97,7 +98,7 @@ export default function NouvelleClassePage() {
             <div>
               <label
                 htmlFor="nom-classe"
-                className="block text-sm font-medium text-slate-300 mb-2"
+                className="block text-sm font-medium text-ink-600 mb-2"
               >
                 Nom de la classe *
               </label>
@@ -116,7 +117,7 @@ export default function NouvelleClassePage() {
               <div>
                 <label
                   htmlFor="mensualite"
-                  className="block text-sm font-medium text-slate-300 mb-2"
+                  className="block text-sm font-medium text-ink-600 mb-2"
                 >
                   Mensualité (FCFA) *
                 </label>
@@ -134,7 +135,7 @@ export default function NouvelleClassePage() {
               <div>
                 <label
                   htmlFor="nb-mois"
-                  className="block text-sm font-medium text-slate-300 mb-2"
+                  className="block text-sm font-medium text-ink-600 mb-2"
                 >
                   Nombre de mois *
                 </label>
@@ -154,12 +155,12 @@ export default function NouvelleClassePage() {
 
             {/* Aperçu montant total */}
             {montantTotal > 0 && (
-              <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/10">
+              <div className="p-4 rounded-xl bg-blue-50 border border-blue-500/20">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-400">
+                  <span className="text-sm text-ink-400">
                     Total par élève pour l&apos;année
                   </span>
-                  <span className="text-xl font-bold text-amber-400">
+                  <span className="text-xl font-bold text-blue-600">
                     {formatMontant(montantTotal)}
                   </span>
                 </div>
@@ -179,14 +180,14 @@ export default function NouvelleClassePage() {
             className="w-full flex items-center justify-between text-left"
             id="btn-toggle-advanced"
           >
-            <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-              <span className="w-7 h-7 rounded-lg bg-slate-500/20 flex items-center justify-center text-slate-400 text-sm font-bold">
-                ⚙
+            <h2 className="text-lg font-semibold text-ink-900 flex items-center gap-2">
+              <span className="w-7 h-7 rounded-lg bg-surface-soft flex items-center justify-center text-ink-400">
+                <Settings size={14} strokeWidth={2} />
               </span>
               Personnaliser ces réglages
             </h2>
             <span
-              className={`text-slate-400 transition-transform ${
+              className={`text-ink-400 transition-transform ${
                 showAdvanced ? "rotate-180" : ""
               }`}
             >
@@ -195,7 +196,7 @@ export default function NouvelleClassePage() {
           </button>
 
           {!showAdvanced && (
-            <p className="text-xs text-slate-500 mt-3 ml-9">
+            <p className="text-xs text-ink-400 mt-3 ml-9">
               Valeurs par défaut : inscription 0 FCFA, échéance le 5 du mois.
               90% des écoles n&apos;ont pas besoin de toucher à ça.
             </p>
@@ -206,7 +207,7 @@ export default function NouvelleClassePage() {
               <div>
                 <label
                   htmlFor="niveau"
-                  className="block text-sm font-medium text-slate-300 mb-2"
+                  className="block text-sm font-medium text-ink-600 mb-2"
                 >
                   Niveau scolaire
                 </label>
@@ -229,7 +230,7 @@ export default function NouvelleClassePage() {
                 <div>
                   <label
                     htmlFor="frais"
-                    className="block text-sm font-medium text-slate-300 mb-2"
+                    className="block text-sm font-medium text-ink-600 mb-2"
                   >
                     Frais d&apos;inscription (FCFA)
                   </label>
@@ -245,7 +246,7 @@ export default function NouvelleClassePage() {
                 <div>
                   <label
                     htmlFor="jour-echeance"
-                    className="block text-sm font-medium text-slate-300 mb-2"
+                    className="block text-sm font-medium text-ink-600 mb-2"
                   >
                     Jour d&apos;échéance mensuel
                   </label>
@@ -261,9 +262,10 @@ export default function NouvelleClassePage() {
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-blue-500/5 border border-blue-500/10 text-xs text-blue-300">
-                💡 Rappels SMS pré-configurés : 3 jours avant l&apos;échéance,
-                le jour même, et 3 jours après si impayé.
+              <div className="p-3 rounded-xl bg-blue-500/5 border border-blue-500/10 text-xs text-blue-300 flex items-start gap-2">
+                <Lightbulb size={14} strokeWidth={2} className="shrink-0 mt-0.5" />
+                <span>Rappels SMS pré-configurés : 3 jours avant l&apos;échéance,
+                le jour même, et 3 jours après si impayé.</span>
               </div>
             </div>
           )}

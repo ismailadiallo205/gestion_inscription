@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { formatMontant, couleurStatut, labelStatut } from "@/lib/utils";
+import { X, GraduationCap } from "lucide-react";
 
 interface Eleve {
   id: string;
@@ -103,8 +104,8 @@ export default function ElevesPage() {
     <div className="max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white">Tous les élèves</h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-ink-900">Tous les élèves</h1>
+          <p className="text-ink-400 text-sm mt-1">
             {eleves.length} élève{eleves.length > 1 ? "s" : ""} au total
           </p>
         </div>
@@ -119,14 +120,14 @@ export default function ElevesPage() {
       {/* Modal Ajout Élève */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-navy-900 border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
-            <div className="p-6 border-b border-white/5 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">Nouvel Élève</h2>
+          <div className="bg-surface border border-border rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="p-6 border-b border-border flex items-center justify-between">
+              <h2 className="text-lg font-bold text-ink-900">Nouvel Élève</h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-ink-400 hover:text-ink-900 transition-colors"
               >
-                ✕
+                <X size={18} strokeWidth={2} />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -137,7 +138,7 @@ export default function ElevesPage() {
               )}
               
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Classe</label>
+                <label className="block text-sm font-medium text-ink-600 mb-2">Classe</label>
                 <select
                   required
                   className="input-field"
@@ -152,7 +153,7 @@ export default function ElevesPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Nom de l'élève</label>
+                <label className="block text-sm font-medium text-ink-600 mb-2">Nom de l'élève</label>
                 <input
                   type="text"
                   required
@@ -164,7 +165,7 @@ export default function ElevesPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Nom du parent</label>
+                <label className="block text-sm font-medium text-ink-600 mb-2">Nom du parent</label>
                 <input
                   type="text"
                   required
@@ -176,7 +177,7 @@ export default function ElevesPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Téléphone du parent (Wave)</label>
+                <label className="block text-sm font-medium text-ink-600 mb-2">Téléphone du parent (Wave)</label>
                 <input
                   type="tel"
                   required
@@ -191,7 +192,7 @@ export default function ElevesPage() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-2.5 rounded-xl font-medium text-slate-300 hover:bg-white/5 border border-transparent hover:border-white/10 transition-all"
+                  className="flex-1 px-4 py-2.5 rounded-xl font-medium text-ink-600 hover:bg-surface-soft border border-transparent hover:border-border transition-all"
                 >
                   Annuler
                 </button>
@@ -202,7 +203,7 @@ export default function ElevesPage() {
                 >
                   {submitting ? (
                     <>
-                      <div className="spinner border-white/30 border-t-white" style={{ width: 16, height: 16 }} />
+                      <div className="spinner border-border border-t-white" style={{ width: 16, height: 16 }} />
                       Ajout...
                     </>
                   ) : (
@@ -229,8 +230,8 @@ export default function ElevesPage() {
             onClick={() => setFiltre(f.key)}
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               filtre === f.key
-                ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                : "bg-navy-800/50 text-slate-400 border border-white/5 hover:border-white/10"
+                ? "bg-blue-100 text-blue-600 border border-blue-500/30"
+                : "bg-surface-soft/50 text-ink-400 border border-border hover:border-border"
             }`}
           >
             {f.label}
@@ -242,8 +243,8 @@ export default function ElevesPage() {
       <div className="glass-card-static overflow-hidden">
         {filtres.length === 0 ? (
           <div className="empty-state py-12">
-            <div className="text-3xl mb-2">👩‍🎓</div>
-            <p className="text-sm text-slate-400">
+            <div className="empty-state-icon"><GraduationCap size={24} strokeWidth={1.75} /></div>
+            <p className="text-sm text-ink-400">
               Aucun élève avec ce filtre
             </p>
           </div>
@@ -274,15 +275,15 @@ export default function ElevesPage() {
                   return (
                     <tr key={eleve.id}>
                       <td>
-                        <span className="text-xs text-amber-400 font-mono bg-amber-500/10 px-2 py-1 rounded-lg">
+                        <span className="text-xs text-blue-600 font-mono bg-blue-100 px-2 py-1 rounded-lg">
                           {eleve.identifiantCourt || "—"}
                         </span>
                       </td>
-                      <td className="font-medium text-white">
+                      <td className="font-medium text-ink-900">
                         {eleve.nomEleve}
                       </td>
-                      <td className="text-slate-300">{eleve.nomParent}</td>
-                      <td className="text-slate-400 font-mono text-sm">
+                      <td className="text-ink-600">{eleve.nomParent}</td>
+                      <td className="text-ink-400 font-mono text-sm">
                         {eleve.telephoneParent}
                       </td>
                       <td>
@@ -293,7 +294,7 @@ export default function ElevesPage() {
                       <td>
                         {total > 0 ? (
                           <div className="flex items-center gap-2">
-                            <div className="w-16 h-2 rounded-full bg-navy-700 overflow-hidden">
+                            <div className="w-16 h-2 rounded-full bg-surface-soft overflow-hidden">
                               <div
                                 className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400"
                                 style={{
@@ -301,18 +302,18 @@ export default function ElevesPage() {
                                 }}
                               />
                             </div>
-                            <span className="text-xs text-slate-400">
+                            <span className="text-xs text-ink-400">
                               {payes}/{total}
                             </span>
                           </div>
                         ) : (
-                          <span className="text-xs text-slate-500">—</span>
+                          <span className="text-xs text-ink-400">—</span>
                         )}
                       </td>
                       <td>
                         {eleve.statut === "en_attente_confirmation" ? (
-                          <span className="badge bg-amber-500/10 text-amber-400">
-                            <span className="badge-dot bg-amber-400" />
+                          <span className="badge bg-blue-100 text-blue-600">
+                            <span className="badge-dot bg-blue-500" />
                             En attente
                           </span>
                         ) : enRetard ? (
