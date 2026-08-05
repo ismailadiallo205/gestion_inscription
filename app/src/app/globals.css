@@ -1,9 +1,10 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════════
-   KlyroEdu — Design System
-   Palette : bleu royal + émeraude + papier bleuté clair + statuts
-   Chaque élément a un rôle. Lisibilité et clarté d'abord.
+   EduPay — Design System
+   Palette : bleu franc + papier bleuté clair + statuts de paiement
+   Inspiré du principe "3 champs suffisent" : peu de couleurs,
+   peu de décor, chaque élément a un rôle.
    ═══════════════════════════════════════════════════════════════ */
 
 @theme {
@@ -531,6 +532,15 @@ h1, h2, h3, h4 {
 }
 
 /* ── Mobile ────────────────────────────────────────────────── */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .sidebar {
     transform: translateX(-100%);

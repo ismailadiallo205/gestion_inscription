@@ -114,7 +114,7 @@ export default function AdminEcolesPage() {
                 <input
                   type="text"
                   required
-                  className="input-field"
+                  className="glass-input"
                   placeholder="Ex: École de l'Excellence"
                   value={formData.nom}
                   onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
@@ -126,7 +126,7 @@ export default function AdminEcolesPage() {
                 <input
                   type="email"
                   required
-                  className="input-field"
+                  className="glass-input"
                   placeholder="Ex: contact@ecole.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -138,18 +138,18 @@ export default function AdminEcolesPage() {
                 <input
                   type="text"
                   required
-                  className="input-field"
+                  className="glass-input"
                   placeholder="Mot de passe à communiquer à l'école"
                   value={formData.motDePasse}
                   onChange={(e) => setFormData({ ...formData, motDePasse: e.target.value })}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-ink-600 mb-2">Type</label>
                   <select
-                    className="input-field"
+                    className="glass-select"
                     value={formData.type}
                     onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                   >
@@ -161,7 +161,7 @@ export default function AdminEcolesPage() {
                   <label className="block text-sm font-medium text-ink-600 mb-2">Ville</label>
                   <input
                     type="text"
-                    className="input-field"
+                    className="glass-input"
                     placeholder="Ex: Dakar"
                     value={formData.ville}
                     onChange={(e) => setFormData({ ...formData, ville: e.target.value })}

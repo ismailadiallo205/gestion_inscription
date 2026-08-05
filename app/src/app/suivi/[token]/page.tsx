@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { formatMontant, formatDate, formatDateCourte } from "@/lib/utils";
 import Link from "next/link";
+import { Check, AlertCircle, CreditCard, CheckCircle2 } from "lucide-react";
 
 interface PageProps {
   params: Promise<{ token: string }>;
@@ -37,16 +38,16 @@ export default async function SuiviParentPage({ params }: PageProps) {
       {/* Navbar */}
       <nav className="flex items-center justify-center px-6 py-4">
         <Link href="/" className="flex items-center">
-          <img src="/logo.png" alt="KlyroEdu" className="h-9 w-auto object-contain" />
+          <img src="/logo.png" alt="EduPay" className="h-9 w-auto object-contain" />
         </Link>
       </nav>
 
       <div className="px-4 py-8 max-w-lg mx-auto">
         <div className="text-center mb-8 animate-fade-in">
-          <h1 className="text-xl font-bold text-white mb-1">
+          <h1 className="text-xl font-bold text-ink-900 mb-1">
             Suivi des paiements
           </h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-ink-400">
             {inscriptions[0].nomParent}
           </p>
         </div>
@@ -75,38 +76,38 @@ export default async function SuiviParentPage({ params }: PageProps) {
             return (
               <div key={inscription.id} className="glass-card-static overflow-hidden">
                 {/* En-tête enfant */}
-                <div className="p-6 border-b border-white/5">
+                <div className="p-6 border-b border-border">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h2 className="text-lg font-semibold text-white">
+                      <h2 className="text-lg font-semibold text-ink-900">
                         {inscription.nomEleve}
                       </h2>
-                      <p className="text-sm text-slate-400 mt-0.5">
+                      <p className="text-sm text-ink-400 mt-0.5">
                         {inscription.classe.ecole.nomPublic ||
                           inscription.classe.ecole.nom}{" "}
                         — {inscription.classe.nom}
                       </p>
-                      <span className="text-xs font-mono px-2 py-0.5 rounded-md mt-2 inline-block" style={{ color: "var(--color-blue-700)", background: "var(--color-blue-100)" }}>
+                      <span className="text-xs text-blue-600 font-mono bg-blue-100 px-2 py-0.5 rounded-md mt-2 inline-block">
                         {inscription.identifiantCourt}
                       </span>
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-white">
+                      <div className="text-2xl font-bold text-ink-900">
                         {pourcentage}%
                       </div>
-                      <div className="text-xs text-slate-500">payé</div>
+                      <div className="text-xs text-ink-400">payé</div>
                     </div>
                   </div>
 
                   {/* Barre de progression */}
                   <div className="mt-4">
-                    <div className="h-3 rounded-full bg-navy-700 overflow-hidden">
+                    <div className="h-3 rounded-full bg-surface-soft overflow-hidden">
                       <div
                         className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-1000"
                         style={{ width: `${pourcentage}%` }}
                       />
                     </div>
-                    <div className="flex justify-between mt-2 text-xs text-slate-500">
+                    <div className="flex justify-between mt-2 text-xs text-ink-400">
                       <span>{formatMontant(totalPaye)} payé</span>
                       <span>{formatMontant(totalGeneral)} total</span>
                     </div>
@@ -115,7 +116,7 @@ export default async function SuiviParentPage({ params }: PageProps) {
 
                 {/* Frise horizontale des échéances */}
                 <div className="p-6">
-                  <p className="text-sm font-medium text-slate-300 mb-4">
+                  <p className="text-sm font-medium text-ink-600 mb-4">
                     Échéancier de l&apos;année
                   </p>
                   <div className="frise-container">
@@ -123,7 +124,7 @@ export default async function SuiviParentPage({ params }: PageProps) {
                       <div key={echeance.id} className="frise-item">
                         <div className={`frise-dot ${echeance.statut}`}>
                           {echeance.statut === "paye" ? (
-                            "✓"
+                            <Check size={12} strokeWidth={3} />
                           ) : echeance.statut === "en_retard" ? (
                             "!"
                           ) : echeance.type === "inscription" ? (
@@ -133,7 +134,7 @@ export default async function SuiviParentPage({ params }: PageProps) {
                           )}
                         </div>
                         <div className="frise-label">
-                          <div className="font-medium text-slate-300">
+                          <div className="font-medium text-ink-600">
                             {formatMontant(echeance.montant).replace(
                               " FCFA",
                               ""
@@ -161,21 +162,24 @@ export default async function SuiviParentPage({ params }: PageProps) {
                 {/* Bouton payer */}
                 {prochainePaiement && (
                   <div className="px-6 pb-6">
-                    <div className="p-4 rounded-xl mb-3" style={{ background: "var(--color-blue-50)", border: "1px solid var(--color-blue-100)" }}>
+                    <div className="p-4 rounded-xl bg-blue-50 border border-blue-500/20 mb-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-slate-300">
+                          <p className="text-sm text-ink-600 flex items-center gap-1.5">
+                            {prochainePaiement.statut === "en_retard" && (
+                              <AlertCircle size={14} strokeWidth={2} className="text-red-500" />
+                            )}
                             {prochainePaiement.statut === "en_retard"
-                              ? "🔴 Paiement en retard"
+                              ? "Paiement en retard"
                               : "Prochain paiement"}
                           </p>
-                          <p className="text-xs text-slate-500 mt-0.5">
+                          <p className="text-xs text-ink-400 mt-0.5">
                             Échéance :{" "}
                             {formatDate(prochainePaiement.dateLimite)}
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-lg font-bold" style={{ color: "var(--color-blue-600)" }}>
+                          <p className="text-lg font-bold text-blue-600">
                             {formatMontant(prochainePaiement.montant)}
                           </p>
                         </div>
@@ -183,10 +187,10 @@ export default async function SuiviParentPage({ params }: PageProps) {
                     </div>
                     <a
                       href={prochainePaiement.lienPaiement || "#"}
-                      className="btn-primary w-full text-center block text-lg py-4"
+                      className="btn-primary w-full text-center flex items-center justify-center gap-2 text-lg py-4"
                       id={`btn-payer-${inscription.id}`}
                     >
-                      💰 Payer maintenant
+                      <CreditCard size={20} strokeWidth={2} /> Payer maintenant
                     </a>
                   </div>
                 )}
@@ -195,8 +199,8 @@ export default async function SuiviParentPage({ params }: PageProps) {
                 {!prochainePaiement && (
                   <div className="px-6 pb-6">
                     <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-center">
-                      <p className="text-emerald-400 font-semibold">
-                        ✅ Tous les paiements sont à jour !
+                      <p className="text-emerald-400 font-semibold flex items-center justify-center gap-2">
+                        <CheckCircle2 size={18} strokeWidth={2} /> Tous les paiements sont à jour !
                       </p>
                     </div>
                   </div>
@@ -207,8 +211,8 @@ export default async function SuiviParentPage({ params }: PageProps) {
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-8 text-xs text-slate-600">
-          <p>Propulsé par KlyroEdu</p>
+        <div className="text-center mt-8 text-xs text-ink-400">
+          <p>Propulsé par EduPay</p>
           <p className="mt-1">Lien de suivi personnel — ne le partagez pas</p>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatMontant, labelStatut, couleurStatut } from "@/lib/utils";
+import { ClipboardList, CheckCircle2, Check, X, Bell, PartyPopper } from "lucide-react";
 
 interface Stats {
   totalEleves: number;
@@ -98,7 +99,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="spinner-dark" style={{ width: 32, height: 32 }} />
+        <div className="spinner" style={{ width: 32, height: 32 }} />
       </div>
     );
   }
@@ -108,8 +109,8 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold" style={{ color: "var(--color-ink-900)" }}>Vue d&apos;ensemble</h1>
-          <p className="text-sm mt-1" style={{ color: "var(--color-ink-400)" }}>
+          <h1 className="text-2xl font-bold text-ink-900">Vue d&apos;ensemble</h1>
+          <p className="text-ink-400 text-sm mt-1">
             Bienvenue sur votre tableau de bord
           </p>
         </div>
@@ -121,54 +122,54 @@ export default function DashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8 stagger-children">
         <div className="stat-card">
-          <p className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: "var(--color-ink-400)" }}>
+          <p className="text-xs font-medium text-ink-400 uppercase tracking-wider mb-2">
             Classes
           </p>
-          <p className="stat-value animate-count-up">
+          <p className="stat-value text-ink-900 animate-count-up">
             {stats.totalClasses}
           </p>
         </div>
         <div className="stat-card">
-          <p className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: "var(--color-ink-400)" }}>
+          <p className="text-xs font-medium text-ink-400 uppercase tracking-wider mb-2">
             Élèves
           </p>
-          <p className="stat-value animate-count-up">
+          <p className="stat-value text-ink-900 animate-count-up">
             {stats.totalEleves}
           </p>
         </div>
         <div className="stat-card">
-          <p className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: "var(--color-ink-400)" }}>
+          <p className="text-xs font-medium text-ink-400 uppercase tracking-wider mb-2">
             Reçu
           </p>
-          <p className="stat-value animate-count-up text-xl" style={{ color: "var(--color-paye)" }}>
+          <p className="stat-value text-emerald-400 animate-count-up text-xl">
             {formatMontant(stats.montantRecu)}
           </p>
         </div>
         <div className="stat-card">
-          <p className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: "var(--color-ink-400)" }}>
+          <p className="text-xs font-medium text-ink-400 uppercase tracking-wider mb-2">
             Attendu
           </p>
-          <p className="stat-value animate-count-up text-xl" style={{ color: "var(--color-du)" }}>
+          <p className="stat-value text-blue-600 animate-count-up text-xl">
             {formatMontant(stats.montantEnAttente)}
           </p>
         </div>
         <div className="stat-card">
-          <p className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: "var(--color-ink-400)" }}>
+          <p className="text-xs font-medium text-ink-400 uppercase tracking-wider mb-2">
             Dossiers
           </p>
-          <p className="stat-value animate-count-up" style={{ color: "var(--color-blue-500)" }}>
+          <p className="stat-value text-blue-400 animate-count-up">
             {stats.dossiersEnAttente}
           </p>
-          <p className="text-xs mt-1" style={{ color: "var(--color-ink-400)" }}>en attente</p>
+          <p className="text-xs text-ink-400 mt-1">en attente</p>
         </div>
         <div className="stat-card">
-          <p className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: "var(--color-ink-400)" }}>
+          <p className="text-xs font-medium text-ink-400 uppercase tracking-wider mb-2">
             En retard
           </p>
-          <p className="stat-value animate-count-up" style={{ color: "var(--color-retard)" }}>
+          <p className="stat-value text-red-400 animate-count-up">
             {stats.elevesEnRetard}
           </p>
-          <p className="text-xs mt-1" style={{ color: "var(--color-ink-400)" }}>à relancer</p>
+          <p className="text-xs text-ink-400 mt-1">à relancer</p>
         </div>
       </div>
 
@@ -176,10 +177,10 @@ export default function DashboardPage() {
         {/* Dossiers en attente de confirmation */}
         <div className="glass-card-static p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold flex items-center gap-2" style={{ color: "var(--color-ink-900)" }}>
-              📋 Dossiers en attente
+            <h2 className="text-lg font-semibold text-ink-900 flex items-center gap-2">
+              <ClipboardList size={18} strokeWidth={2} /> Dossiers en attente
               {dossiers.length > 0 && (
-                <span className="badge" style={{ background: "var(--color-du-bg)", color: "var(--color-du)" }}>
+                <span className="badge bg-blue-100 text-blue-600">
                   {dossiers.length}
                 </span>
               )}
@@ -188,8 +189,10 @@ export default function DashboardPage() {
 
           {dossiers.length === 0 ? (
             <div className="empty-state py-8">
-              <div className="text-3xl mb-2">✅</div>
-              <p className="text-sm" style={{ color: "var(--color-ink-400)" }}>
+              <div className="empty-state-icon" style={{ color: "var(--color-paye)", background: "var(--color-paye-bg)" }}>
+                <CheckCircle2 size={24} strokeWidth={1.75} />
+              </div>
+              <p className="text-sm text-ink-400">
                 Aucun dossier en attente
               </p>
             </div>
@@ -198,17 +201,16 @@ export default function DashboardPage() {
               {dossiers.map((dossier) => (
                 <div
                   key={dossier.id}
-                  className="flex items-center justify-between p-4 rounded-xl transition-colors"
-                  style={{ background: "var(--color-surface-soft)", border: "1px solid var(--color-border-soft)" }}
+                  className="flex items-center justify-between p-4 rounded-xl bg-surface-soft/50 border border-border hover:border-border transition-colors"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium truncate" style={{ color: "var(--color-ink-900)" }}>
+                    <p className="font-medium text-ink-900 truncate">
                       {dossier.nomEleve}
                     </p>
-                    <p className="text-sm truncate" style={{ color: "var(--color-ink-600)" }}>
+                    <p className="text-sm text-ink-400 truncate">
                       {dossier.nomParent} · {dossier.telephoneParent}
                     </p>
-                    <p className="text-xs mt-1" style={{ color: "var(--color-ink-400)" }}>
+                    <p className="text-xs text-ink-400 mt-1">
                       {dossier.classe.nom}
                     </p>
                   </div>
@@ -218,14 +220,14 @@ export default function DashboardPage() {
                       className="btn-success btn-sm"
                       id={`btn-confirm-${dossier.id}`}
                     >
-                      ✓
+                      <Check size={16} strokeWidth={2.5} />
                     </button>
                     <button
                       onClick={() => handleRefuser(dossier.id)}
                       className="btn-danger btn-sm"
                       id={`btn-refuse-${dossier.id}`}
                     >
-                      ✕
+                      <X size={16} strokeWidth={2.5} />
                     </button>
                   </div>
                 </div>
@@ -237,10 +239,10 @@ export default function DashboardPage() {
         {/* Élèves à relancer */}
         <div className="glass-card-static p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold flex items-center gap-2" style={{ color: "var(--color-ink-900)" }}>
-              🔔 Élèves à relancer
+            <h2 className="text-lg font-semibold text-ink-900 flex items-center gap-2">
+              <Bell size={18} strokeWidth={2} /> Élèves à relancer
               {retards.length > 0 && (
-                <span className="badge" style={{ background: "var(--color-retard-bg)", color: "var(--color-retard)" }}>
+                <span className="badge bg-red-500/10 text-red-400">
                   {retards.length}
                 </span>
               )}
@@ -249,8 +251,10 @@ export default function DashboardPage() {
 
           {retards.length === 0 ? (
             <div className="empty-state py-8">
-              <div className="text-3xl mb-2">🎉</div>
-              <p className="text-sm" style={{ color: "var(--color-ink-400)" }}>
+              <div className="empty-state-icon" style={{ color: "var(--color-paye)", background: "var(--color-paye-bg)" }}>
+                <PartyPopper size={24} strokeWidth={1.75} />
+              </div>
+              <p className="text-sm text-ink-400">
                 Aucun retard de paiement
               </p>
             </div>
@@ -259,25 +263,24 @@ export default function DashboardPage() {
               {retards.map((eleve) => (
                 <div
                   key={eleve.id}
-                  className="flex items-center justify-between p-4 rounded-xl transition-colors"
-                  style={{ background: "var(--color-surface-soft)", border: "1px solid var(--color-border-soft)" }}
+                  className="flex items-center justify-between p-4 rounded-xl bg-surface-soft/50 border border-red-500/10 hover:border-red-500/20 transition-colors"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium truncate" style={{ color: "var(--color-ink-900)" }}>
+                    <p className="font-medium text-ink-900 truncate">
                       {eleve.nomEleve}
-                      <span className="text-xs ml-2" style={{ color: "var(--color-ink-400)" }}>
+                      <span className="text-xs text-ink-400 ml-2">
                         {eleve.identifiantCourt}
                       </span>
                     </p>
-                    <p className="text-sm" style={{ color: "var(--color-ink-600)" }}>
+                    <p className="text-sm text-ink-400">
                       {eleve.classe.nom}
                     </p>
                   </div>
                   <div className="text-right ml-4 shrink-0">
-                    <p className="font-semibold text-sm" style={{ color: "var(--color-retard)" }}>
+                    <p className="text-red-400 font-semibold text-sm">
                       {formatMontant(eleve.montantRetard)}
                     </p>
-                    <p className="text-xs" style={{ color: "var(--color-ink-400)" }}>
+                    <p className="text-xs text-ink-400">
                       {eleve.nbEcheancesRetard} échéance
                       {eleve.nbEcheancesRetard > 1 ? "s" : ""}
                     </p>

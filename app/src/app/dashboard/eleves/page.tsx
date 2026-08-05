@@ -141,7 +141,7 @@ export default function ElevesPage() {
                 <label className="block text-sm font-medium text-ink-600 mb-2">Classe</label>
                 <select
                   required
-                  className="input-field"
+                  className="glass-select"
                   value={formData.classeId}
                   onChange={(e) => setFormData({ ...formData, classeId: e.target.value })}
                 >
@@ -157,7 +157,7 @@ export default function ElevesPage() {
                 <input
                   type="text"
                   required
-                  className="input-field"
+                  className="glass-input"
                   placeholder="Ex: Amadou Diallo"
                   value={formData.nomEleve}
                   onChange={(e) => setFormData({ ...formData, nomEleve: e.target.value })}
@@ -169,7 +169,7 @@ export default function ElevesPage() {
                 <input
                   type="text"
                   required
-                  className="input-field"
+                  className="glass-input"
                   placeholder="Ex: Ousmane Diallo"
                   value={formData.nomParent}
                   onChange={(e) => setFormData({ ...formData, nomParent: e.target.value })}
@@ -181,7 +181,7 @@ export default function ElevesPage() {
                 <input
                   type="tel"
                   required
-                  className="input-field"
+                  className="glass-input"
                   placeholder="Ex: +221771234567"
                   value={formData.telephoneParent}
                   onChange={(e) => setFormData({ ...formData, telephoneParent: e.target.value })}

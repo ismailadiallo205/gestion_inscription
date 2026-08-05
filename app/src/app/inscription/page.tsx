@@ -49,24 +49,26 @@ export default function InscriptionEcolePage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-3">
-            <img src="/logo.png" alt="KlyroEdu" className="h-12 w-auto object-contain" />
-            <span className="text-2xl font-bold tracking-tight" style={{ color: "var(--color-ink-900)" }}>
-              Klyro<span style={{ color: "var(--color-blue-500)" }}>Edu</span>
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/20">
+              S
+            </div>
+            <span className="text-2xl font-bold text-ink-900 tracking-tight">
+              Skoo<span className="text-blue-600">Pay</span>
             </span>
           </Link>
-          <p className="mt-4 text-sm" style={{ color: "var(--color-ink-600)" }}>
+          <p className="text-ink-400 mt-4 text-sm">
             Créez votre espace école en quelques secondes
           </p>
         </div>
 
         {/* Formulaire */}
         <form onSubmit={handleSubmit} className="glass-card-static p-8">
-          <h1 className="text-xl font-bold mb-6" style={{ color: "var(--color-ink-900)" }}>
+          <h1 className="text-xl font-bold text-ink-900 mb-6">
             Inscrire mon école
           </h1>
 
           {erreur && (
-            <div className="mb-4 p-3 rounded-xl border text-sm" style={{ background: "var(--color-retard-bg)", borderColor: "rgba(194, 43, 58, 0.2)", color: "var(--color-retard)" }}>
+            <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
               {erreur}
             </div>
           )}
@@ -75,8 +77,7 @@ export default function InscriptionEcolePage() {
             <div>
               <label
                 htmlFor="nom"
-                className="block text-sm font-medium mb-2"
-                style={{ color: "var(--color-ink-600)" }}
+                className="block text-sm font-medium text-ink-600 mb-2"
               >
                 Nom de l&apos;école *
               </label>
@@ -94,8 +95,7 @@ export default function InscriptionEcolePage() {
             <div>
               <label
                 htmlFor="email-register"
-                className="block text-sm font-medium mb-2"
-                style={{ color: "var(--color-ink-600)" }}
+                className="block text-sm font-medium text-ink-600 mb-2"
               >
                 Email *
               </label>
@@ -113,8 +113,7 @@ export default function InscriptionEcolePage() {
             <div>
               <label
                 htmlFor="password-register"
-                className="block text-sm font-medium mb-2"
-                style={{ color: "var(--color-ink-600)" }}
+                className="block text-sm font-medium text-ink-600 mb-2"
               >
                 Mot de passe *
               </label>
@@ -136,8 +135,7 @@ export default function InscriptionEcolePage() {
               <div>
                 <label
                   htmlFor="ville"
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: "var(--color-ink-600)" }}
+                  className="block text-sm font-medium text-ink-600 mb-2"
                 >
                   Ville
                 </label>
@@ -153,8 +151,7 @@ export default function InscriptionEcolePage() {
               <div>
                 <label
                   htmlFor="type-ecole"
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: "var(--color-ink-600)" }}
+                  className="block text-sm font-medium text-ink-600 mb-2"
                 >
                   Type
                 </label>
@@ -184,12 +181,11 @@ export default function InscriptionEcolePage() {
             )}
           </button>
 
-          <p className="text-center text-sm mt-6" style={{ color: "var(--color-ink-400)" }}>
+          <p className="text-center text-sm text-ink-400 mt-6">
             Déjà un compte ?{" "}
             <Link
               href="/connexion"
-              className="font-medium transition-colors hover:underline"
-              style={{ color: "var(--color-blue-500)" }}
+              className="text-blue-600 hover:text-blue-600 font-medium transition-colors"
             >
               Se connecter
             </Link>

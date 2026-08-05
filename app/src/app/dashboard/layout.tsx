@@ -5,12 +5,13 @@ import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { LayoutDashboard, BookOpen, GraduationCap, Settings, LogOut } from "lucide-react";
 
 const navItems = [
-  { href: "/dashboard", label: "Vue d'ensemble", icon: "📊" },
-  { href: "/dashboard/classes", label: "Classes", icon: "📚" },
-  { href: "/dashboard/eleves", label: "Élèves", icon: "👩‍🎓" },
-  { href: "/dashboard/parametres", label: "Paramètres", icon: "⚙️" },
+  { href: "/dashboard", label: "Vue d'ensemble", icon: LayoutDashboard },
+  { href: "/dashboard/classes", label: "Classes", icon: BookOpen },
+  { href: "/dashboard/eleves", label: "Élèves", icon: GraduationCap },
+  { href: "/dashboard/parametres", label: "Paramètres", icon: Settings },
 ];
 
 export default function DashboardLayout({
@@ -36,18 +37,18 @@ export default function DashboardLayout({
 
   if (status === "loading" || status === "unauthenticated" || (session?.user as any)?.role === "SUPER_ADMIN") {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--color-paper)" }}>
+      <div className="min-h-screen bg-paper flex items-center justify-center">
         <div className="spinner-dark" style={{ width: 40, height: 40 }} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--color-paper)" }}>
+    <div className="min-h-screen bg-paper">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-30 md:hidden"
+          className="fixed inset-0 bg-black/60 z-30 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -55,12 +56,9 @@ export default function DashboardLayout({
       {/* Sidebar */}
       <aside className={`sidebar ${sidebarOpen ? "open" : ""} md:translate-x-0`}>
         {/* Logo */}
-        <div className="p-6" style={{ borderBottom: "1px solid var(--color-border)" }}>
-          <Link href="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="KlyroEdu" className="h-9 w-auto object-contain" />
-            <span className="text-lg font-bold tracking-tight" style={{ color: "var(--color-ink-900)" }}>
-              Klyro<span style={{ color: "var(--color-blue-500)" }}>Edu</span>
-            </span>
+        <div className="p-6 border-b border-border">
+          <Link href="/" className="flex items-center">
+            <img src="/logo.png" alt="EduPay" className="h-9 w-auto object-contain" />
           </Link>
         </div>
 
@@ -77,7 +75,7 @@ export default function DashboardLayout({
                 className={`sidebar-link ${isActive ? "active" : ""}`}
                 onClick={() => setSidebarOpen(false)}
               >
-                <span className="text-lg">{item.icon}</span>
+                <item.icon size={18} strokeWidth={2} />
                 <span>{item.label}</span>
               </Link>
             );
@@ -85,14 +83,13 @@ export default function DashboardLayout({
         </nav>
 
         {/* Déconnexion */}
-        <div className="p-4" style={{ borderTop: "1px solid var(--color-border)" }}>
+        <div className="p-4 border-t border-border">
           <button
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="sidebar-link w-full text-left"
-            style={{ color: "var(--color-retard)" }}
+            className="sidebar-link w-full text-left hover:text-red-400"
             id="btn-logout"
           >
-            <span className="text-lg">🚪</span>
+            <LogOut size={18} strokeWidth={2} />
             <span>Déconnexion</span>
           </button>
         </div>
@@ -101,11 +98,10 @@ export default function DashboardLayout({
       {/* Main content */}
       <div className="md:ml-[260px]">
         {/* Top bar mobile */}
-        <header className="md:hidden flex items-center justify-between p-4" style={{ borderBottom: "1px solid var(--color-border)" }}>
+        <header className="md:hidden flex items-center justify-between p-4 border-b border-border">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2"
-            style={{ color: "var(--color-ink-900)" }}
+            className="text-ink-900 p-2"
             id="btn-menu"
             aria-label="Menu"
           >
@@ -120,7 +116,7 @@ export default function DashboardLayout({
               <path d="M3 12h18M3 6h18M3 18h18" />
             </svg>
           </button>
-          <img src="/logo.png" alt="KlyroEdu" className="h-7 w-auto object-contain" />
+          <img src="/logo.png" alt="EduPay" className="h-7 w-auto object-contain" />
           <div className="w-10" />
         </header>
 

@@ -47,7 +47,7 @@ export default function HomePage() {
       {/* ── Navigation ────────────────────────────── */}
       <nav className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
         <Link href="/" className="flex items-center group">
-          <img src="/logo.png" alt="KlyroEdu" className="h-10 w-auto object-contain" />
+          <img src="/logo.png" alt="EduPay" className="h-10 w-auto object-contain" />
         </Link>
         <div className="flex items-center gap-3">
           <Link href="/connexion" className="btn-secondary btn-sm text-sm">
@@ -215,7 +215,7 @@ export default function HomePage() {
               </h3>
               <p className="text-sm leading-relaxed" style={{ color: "var(--color-ink-600)" }}>
                 Nom de la classe, mensualité, nombre de mois. Le reste est
-                déjà prêt pour vous.
+                pré-rempli intelligemment.
               </p>
             </div>
             <div className="glass-card-static p-8 text-center">
@@ -250,7 +250,7 @@ export default function HomePage() {
       <footer className="border-t py-8 px-6" style={{ borderColor: "var(--color-border)" }}>
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm" style={{ color: "var(--color-ink-400)" }}>
-            <img src="/logo.png" alt="KlyroEdu" className="h-5 w-auto object-contain opacity-70" />
+            <img src="/logo.png" alt="EduPay" className="h-5 w-auto object-contain opacity-70" />
             © {new Date().getFullYear()}
           </div>
           <div className="text-sm" style={{ color: "var(--color-ink-400)" }}>
