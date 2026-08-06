@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     if (!session?.user || session.user.role !== "ECOLE") {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
-    const ecoleId = session.user.ecoleId;
+    const ecoleId = session.user.ecoleId as string;
 
     const { searchParams } = new URL(request.url);
     const maintenant = new Date();
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
 
     // Répartition des dépenses par catégorie (pour un graphique éventuel)
     const parCategorie: Record<string, number> = {};
-    for (const d of depenses) {
+    for (const d of depenses as { categorie: string; montant: number }[]) {
       parCategorie[d.categorie] = (parCategorie[d.categorie] || 0) + d.montant;
     }
 

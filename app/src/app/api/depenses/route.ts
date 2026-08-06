@@ -11,8 +11,10 @@ export async function GET() {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
 
+    const ecoleId = session.user.ecoleId as string;
+
     const depenses = await prisma.depense.findMany({
-      where: { ecoleId: session.user.ecoleId },
+      where: { ecoleId },
       orderBy: [{ annee: "desc" }, { mois: "desc" }, { createdAt: "desc" }],
     });
 
@@ -34,6 +36,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
 
+    const ecoleId = session.user.ecoleId as string;
     const body = await request.json();
     const { libelle, categorie, montant, recurrence, mois, annee } = body;
 
@@ -53,7 +56,7 @@ export async function POST(request: NextRequest) {
 
     const depense = await prisma.depense.create({
       data: {
-        ecoleId: session.user.ecoleId,
+        ecoleId,
         libelle,
         categorie: categorie || "autre",
         montant: Math.round(montant),

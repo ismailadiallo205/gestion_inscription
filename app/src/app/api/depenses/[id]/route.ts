@@ -15,8 +15,9 @@ export async function PATCH(
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
 
+    const ecoleId = session.user.ecoleId as string;
     const existante = await prisma.depense.findUnique({ where: { id } });
-    if (!existante || existante.ecoleId !== session.user.ecoleId) {
+    if (!existante || existante.ecoleId !== ecoleId) {
       return NextResponse.json({ error: "Dépense introuvable" }, { status: 404 });
     }
 
@@ -58,8 +59,9 @@ export async function DELETE(
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
 
+    const ecoleId = session.user.ecoleId as string;
     const existante = await prisma.depense.findUnique({ where: { id } });
-    if (!existante || existante.ecoleId !== session.user.ecoleId) {
+    if (!existante || existante.ecoleId !== ecoleId) {
       return NextResponse.json({ error: "Dépense introuvable" }, { status: 404 });
     }
 
