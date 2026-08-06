@@ -24,7 +24,8 @@
     "next-auth": "^4.24.11",
     "bcryptjs": "^2.4.3",
     "nanoid": "^5.1.5",
-    "lucide-react": "^1.28.0"
+    "lucide-react": "^1.28.0",
+    "@supabase/supabase-js": "^2.112.0"
   },
   "devDependencies": {
     "typescript": "^5.8.0",

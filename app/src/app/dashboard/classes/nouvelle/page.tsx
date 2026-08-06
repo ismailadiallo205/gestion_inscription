@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { NIVEAUX_STANDARD, formatMontant } from "@/lib/utils";
 import { calculerMontantTotal } from "@/lib/echeancier";
-import { ArrowLeft, Settings, Lightbulb } from "lucide-react";
+import { ArrowLeft, Settings, Lightbulb, FileText, Plus, X } from "lucide-react";
 
 export default function NouvelleClassePage() {
   const router = useRouter();
@@ -22,6 +22,20 @@ export default function NouvelleClassePage() {
   const [niveauStandard, setNiveauStandard] = useState("");
   const [fraisInscription, setFraisInscription] = useState("0");
   const [jourEcheanceMensuel, setJourEcheanceMensuel] = useState("5");
+  const [documentsRequis, setDocumentsRequis] = useState<
+    { nom: string; obligatoire: boolean }[]
+  >([]);
+
+  const ajouterDocument = () =>
+    setDocumentsRequis([...documentsRequis, { nom: "", obligatoire: true }]);
+
+  const retirerDocument = (index: number) =>
+    setDocumentsRequis(documentsRequis.filter((_, i) => i !== index));
+
+  const modifierDocument = (index: number, nom: string) =>
+    setDocumentsRequis(
+      documentsRequis.map((d, i) => (i === index ? { ...d, nom } : d))
+    );
 
   const montantTotal =
     montantMensualite && nbMois
@@ -45,6 +59,7 @@ export default function NouvelleClassePage() {
           niveauStandard: niveauStandard || null,
           fraisInscription: parseInt(fraisInscription || "0"),
           jourEcheanceMensuel: parseInt(jourEcheanceMensuel),
+          documentsRequis: documentsRequis.filter((d) => d.nom.trim()),
         }),
       });
 
@@ -266,6 +281,45 @@ export default function NouvelleClassePage() {
                 <Lightbulb size={14} strokeWidth={2} className="shrink-0 mt-0.5" />
                 <span>Rappels SMS pré-configurés : 3 jours avant l&apos;échéance,
                 le jour même, et 3 jours après si impayé.</span>
+              </div>
+
+              <div className="pt-2 border-t border-border">
+                <p className="text-sm font-medium text-ink-600 mb-3 flex items-center gap-2">
+                  <FileText size={14} strokeWidth={2} /> Documents à demander aux parents
+                </p>
+                <div className="space-y-2">
+                  {documentsRequis.map((doc, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={doc.nom}
+                        onChange={(e) => modifierDocument(index, e.target.value)}
+                        placeholder="Ex: Extrait de naissance"
+                        className="glass-input"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => retirerDocument(index)}
+                        className="text-ink-400 hover:text-red-500 transition-colors p-2 shrink-0"
+                        title="Retirer"
+                      >
+                        <X size={16} strokeWidth={2} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={ajouterDocument}
+                  className="btn-secondary btn-sm mt-3 inline-flex items-center gap-1.5"
+                >
+                  <Plus size={14} strokeWidth={2} /> Ajouter un document
+                </button>
+                {documentsRequis.length === 0 && (
+                  <p className="text-xs text-ink-400 mt-2">
+                    Aucun document demandé — le parent remplit juste le formulaire.
+                  </p>
+                )}
               </div>
             </div>
           )}

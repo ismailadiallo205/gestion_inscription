@@ -5,12 +5,13 @@ import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, BookOpen, GraduationCap, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, BookOpen, GraduationCap, Wallet, Settings, LogOut } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "Vue d'ensemble", icon: LayoutDashboard },
   { href: "/dashboard/classes", label: "Classes", icon: BookOpen },
   { href: "/dashboard/eleves", label: "Élèves", icon: GraduationCap },
+  { href: "/dashboard/finances", label: "Finances", icon: Wallet },
   { href: "/dashboard/parametres", label: "Paramètres", icon: Settings },
 ];
 

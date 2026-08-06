@@ -24,6 +24,7 @@ model Ecole {
   id                    String    @id @default(cuid())
   nom                   String
   nomPublic             String?
+  logoUrl               String?
   email                 String    @unique
   motDePasseHash        String
   ville                 String?
@@ -36,8 +37,27 @@ model Ecole {
   updatedAt             DateTime  @updatedAt
 
   classes               Classe[]
+  depenses              Depense[]
 
   @@map("ecoles")
+}
+
+model Depense {
+  id          String    @id @default(cuid())
+  ecoleId     String
+  libelle     String    // ex: "Salaire enseignants", "Loyer local"
+  categorie   String    @default("autre") // salaires | loyer | fournitures | electricite | transport | autre
+  montant     Int
+  recurrence  String    @default("mensuelle") // mensuelle (comptée chaque mois tant qu'active) | ponctuelle (un seul mois précis)
+  mois        Int?      // 1-12, requis si recurrence = ponctuelle
+  annee       Int?      // requis si recurrence = ponctuelle
+  active      Boolean   @default(true) // pour désactiver une dépense mensuelle récurrente sans la supprimer
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  ecole       Ecole     @relation(fields: [ecoleId], references: [id], onDelete: Cascade)
+
+  @@map("depenses")
 }
 
 model Classe {
@@ -58,8 +78,23 @@ model Classe {
 
   ecole               Ecole     @relation(fields: [ecoleId], references: [id])
   inscriptions        Inscription[]
+  documentsRequis     DocumentRequis[]
 
   @@map("classes")
+}
+
+model DocumentRequis {
+  id          String    @id @default(cuid())
+  classeId    String
+  nom         String    // ex: "Extrait de naissance"
+  obligatoire Boolean   @default(true)
+  ordre       Int       @default(0)
+  createdAt   DateTime  @default(now())
+
+  classe      Classe    @relation(fields: [classeId], references: [id], onDelete: Cascade)
+  soumis      DocumentSoumis[]
+
+  @@map("documents_requis")
 }
 
 model Inscription {
@@ -68,6 +103,8 @@ model Inscription {
   nomEleve          String
   nomParent         String
   telephoneParent   String
+  genre             String?   // M | F
+  dateNaissance     DateTime?
   identifiantCourt  String?   @unique  // ex: EA-4821
   dateInscription   DateTime  @default(now())
   statut            String    @default("en_attente_confirmation") // en_attente_confirmation | confirme | refuse
@@ -77,8 +114,23 @@ model Inscription {
 
   classe            Classe    @relation(fields: [classeId], references: [id])
   echeances         Echeance[]
+  documentsSoumis   DocumentSoumis[]
 
   @@map("inscriptions")
+}
+
+model DocumentSoumis {
+  id                String    @id @default(cuid())
+  inscriptionId     String
+  documentRequisId  String
+  nomFichier        String
+  fileUrl           String
+  dateUpload        DateTime  @default(now())
+
+  inscription       Inscription     @relation(fields: [inscriptionId], references: [id], onDelete: Cascade)
+  documentRequis    DocumentRequis  @relation(fields: [documentRequisId], references: [id])
+
+  @@map("documents_soumis")
 }
 
 model Echeance {
@@ -95,7 +147,7 @@ model Echeance {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
-  inscription     Inscription @relation(fields: [inscriptionId], references: [id])
+  inscription     Inscription @relation(fields: [inscriptionId], references: [id], onDelete: Cascade)
   rappels         RappelLog[]
 
   @@map("echeances")
@@ -110,7 +162,7 @@ model RappelLog {
   statutEnvoi String    @default("envoye") // envoye | echoue | delivre
   createdAt   DateTime  @default(now())
 
-  echeance    Echeance  @relation(fields: [echeanceId], references: [id])
+  echeance    Echeance  @relation(fields: [echeanceId], references: [id], onDelete: Cascade)
 
   @@map("rappels_log")
 }

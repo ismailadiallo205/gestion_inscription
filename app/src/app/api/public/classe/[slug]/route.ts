@@ -20,7 +20,11 @@ export async function GET(
         slugInscription: true,
         statut: true,
         ecole: {
-          select: { nom: true, nomPublic: true, slug: true },
+          select: { nom: true, nomPublic: true, logoUrl: true, slug: true },
+        },
+        documentsRequis: {
+          select: { id: true, nom: true, obligatoire: true },
+          orderBy: { ordre: "asc" },
         },
       },
     });

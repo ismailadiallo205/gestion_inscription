@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { formatMontant, formatDate, labelStatut, couleurStatut } from "@/lib/utils";
-import { ArrowLeft, Check, Copy, ClipboardList, X, GraduationCap } from "lucide-react";
+import { ArrowLeft, Check, Copy, ClipboardList, X, GraduationCap, FileCheck } from "lucide-react";
 
 interface ClasseDetail {
   id: string;
@@ -25,6 +25,11 @@ interface ClasseDetail {
     identifiantCourt: string | null;
     statut: string;
     dateInscription: string;
+    documentsSoumis: Array<{
+      id: string;
+      fileUrl: string;
+      documentRequis: { nom: string };
+    }>;
     echeances: Array<{
       id: string;
       type: string;
@@ -164,6 +169,22 @@ export default function ClasseDetailPage() {
                   <p className="text-xs text-ink-400 mt-1">
                     {formatDate(insc.dateInscription)}
                   </p>
+                  {insc.documentsSoumis.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {insc.documentsSoumis.map((doc) => (
+                        <a
+                          key={doc.id}
+                          href={doc.fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-blue-600 hover:underline inline-flex items-center gap-1 bg-blue-100 px-2 py-1 rounded-lg"
+                        >
+                          <FileCheck size={12} strokeWidth={2} />
+                          {doc.documentRequis.nom}
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center gap-2">
                   <button

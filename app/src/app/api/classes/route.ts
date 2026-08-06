@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
       fraisInscription,
       dateDebut,
       jourEcheanceMensuel,
+      documentsRequis, // tableau de { nom: string, obligatoire: boolean }
     } = body;
 
     // Validation des 3 champs obligatoires
@@ -67,6 +68,19 @@ export async function POST(request: NextRequest) {
           ? parseInt(String(jourEcheanceMensuel))
           : 5,
         slugInscription,
+        ...(Array.isArray(documentsRequis) && documentsRequis.length > 0
+          ? {
+              documentsRequis: {
+                create: documentsRequis
+                  .filter((d: any) => d?.nom?.trim())
+                  .map((d: any, index: number) => ({
+                    nom: d.nom.trim(),
+                    obligatoire: d.obligatoire !== false,
+                    ordre: index,
+                  })),
+              },
+            }
+          : {}),
       },
     });
 

@@ -4,15 +4,22 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { formatMontant } from "@/lib/utils";
-import { Check, SearchX } from "lucide-react";
+import { Check, SearchX, Upload, FileCheck } from "lucide-react";
+
+interface DocumentRequisInfo {
+  id: string;
+  nom: string;
+  obligatoire: boolean;
+}
 
 interface ClasseInfo {
   nom: string;
   montantMensualite: number;
   nbMois: number;
   fraisInscription: number;
-  ecole: { nom: string; nomPublic: string | null };
+  ecole: { nom: string; nomPublic: string | null; logoUrl: string | null };
   slugInscription: string;
+  documentsRequis: DocumentRequisInfo[];
 }
 
 export default function InscriptionParentPage() {
@@ -24,8 +31,13 @@ export default function InscriptionParentPage() {
   const [erreur, setErreur] = useState("");
 
   const [nomEleve, setNomEleve] = useState("");
+  const [genre, setGenre] = useState("");
+  const [dateNaissance, setDateNaissance] = useState("");
   const [nomParent, setNomParent] = useState("");
   const [telephoneParent, setTelephoneParent] = useState("");
+  const [fichiers, setFichiers] = useState<Record<string, File | null>>({});
+  const [uploadingDoc, setUploadingDoc] = useState<string | null>(null);
+  const [erreurDoc, setErreurDoc] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetch(`/api/public/classe/${params.classeSlug}`)
@@ -44,17 +56,60 @@ export default function InscriptionParentPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErreur("");
+
+    // Vérifier que tous les documents obligatoires ont bien un fichier
+    const documentsManquants = (classe?.documentsRequis || []).filter(
+      (doc) => doc.obligatoire && !fichiers[doc.id]
+    );
+    if (documentsManquants.length > 0) {
+      setErreur(
+        `Document manquant : ${documentsManquants.map((d) => d.nom).join(", ")}`
+      );
+      return;
+    }
+
     setSubmitting(true);
 
     try {
+      // 1. Uploader chaque document sélectionné
+      const documentsUploades: { documentRequisId: string; fileUrl: string; nomFichier: string }[] = [];
+
+      for (const doc of classe?.documentsRequis || []) {
+        const fichier = fichiers[doc.id];
+        if (!fichier) continue;
+
+        const formData = new FormData();
+        formData.append("file", fichier);
+        formData.append("dossier", "justificatifs");
+
+        const resUpload = await fetch("/api/upload", { method: "POST", body: formData });
+        const dataUpload = await resUpload.json();
+
+        if (!resUpload.ok) {
+          setErreur(`Erreur avec le document "${doc.nom}" : ${dataUpload.error}`);
+          setSubmitting(false);
+          return;
+        }
+
+        documentsUploades.push({
+          documentRequisId: doc.id,
+          fileUrl: dataUpload.url,
+          nomFichier: dataUpload.nomFichier,
+        });
+      }
+
+      // 2. Soumettre le dossier avec les documents déjà uploadés
       const res = await fetch("/api/inscriptions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           classeSlug: params.classeSlug,
           nomEleve,
+          genre,
+          dateNaissance,
           nomParent,
           telephoneParent,
+          documents: documentsUploades,
         }),
       });
 
@@ -149,6 +204,13 @@ export default function InscriptionParentPage() {
       <div className="px-6 py-12 max-w-lg mx-auto">
         {/* Info classe */}
         <div className="text-center mb-8 animate-fade-in">
+          {classe.ecole.logoUrl && (
+            <img
+              src={classe.ecole.logoUrl}
+              alt={classe.ecole.nomPublic || classe.ecole.nom}
+              className="w-16 h-16 rounded-2xl object-cover mx-auto mb-4 border border-border shadow-sm"
+            />
+          )}
           <p className="text-sm text-blue-600 font-medium mb-2">
             {classe.ecole.nomPublic || classe.ecole.nom}
           </p>
@@ -201,6 +263,42 @@ export default function InscriptionParentPage() {
               />
             </div>
 
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label
+                  htmlFor="genre"
+                  className="block text-sm font-medium text-ink-600 mb-2"
+                >
+                  Genre
+                </label>
+                <select
+                  id="genre"
+                  value={genre}
+                  onChange={(e) => setGenre(e.target.value)}
+                  className="glass-select"
+                >
+                  <option value="">Non précisé</option>
+                  <option value="M">Masculin</option>
+                  <option value="F">Féminin</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="date-naissance"
+                  className="block text-sm font-medium text-ink-600 mb-2"
+                >
+                  Date de naissance
+                </label>
+                <input
+                  id="date-naissance"
+                  type="date"
+                  value={dateNaissance}
+                  onChange={(e) => setDateNaissance(e.target.value)}
+                  className="glass-input"
+                />
+              </div>
+            </div>
+
             <div>
               <label
                 htmlFor="nom-parent"
@@ -240,6 +338,46 @@ export default function InscriptionParentPage() {
               </p>
             </div>
           </div>
+
+          {classe.documentsRequis && classe.documentsRequis.length > 0 && (
+            <div className="mt-6 pt-6 border-t border-border">
+              <h3 className="text-sm font-semibold text-ink-900 mb-4">
+                Documents demandés par l&apos;école
+              </h3>
+              <div className="space-y-3">
+                {classe.documentsRequis.map((doc) => (
+                  <div key={doc.id}>
+                    <label className="block text-sm font-medium text-ink-600 mb-2">
+                      {doc.nom} {doc.obligatoire && <span className="text-red-500">*</span>}
+                    </label>
+                    <label
+                      className="flex items-center gap-3 p-3 rounded-xl border border-dashed border-border hover:border-blue-500 cursor-pointer transition-colors bg-surface-soft/40"
+                    >
+                      <input
+                        type="file"
+                        accept=".png,.jpg,.jpeg,.pdf"
+                        className="hidden"
+                        onChange={(e) =>
+                          setFichiers({ ...fichiers, [doc.id]: e.target.files?.[0] || null })
+                        }
+                      />
+                      {fichiers[doc.id] ? (
+                        <span className="flex items-center gap-2 text-sm text-emerald-500 truncate">
+                          <FileCheck size={16} strokeWidth={2} className="shrink-0" />
+                          {fichiers[doc.id]?.name}
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-2 text-sm text-ink-400">
+                          <Upload size={16} strokeWidth={2} className="shrink-0" />
+                          PNG, JPEG ou PDF — 5 Mo max
+                        </span>
+                      )}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <button
             type="submit"

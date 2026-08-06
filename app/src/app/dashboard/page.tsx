@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatMontant, labelStatut, couleurStatut } from "@/lib/utils";
-import { ClipboardList, CheckCircle2, Check, X, Bell, PartyPopper } from "lucide-react";
+import { ClipboardList, CheckCircle2, Check, X, Bell, PartyPopper, FileCheck } from "lucide-react";
 
 interface Stats {
   totalEleves: number;
@@ -21,6 +21,11 @@ interface DossierEnAttente {
   telephoneParent: string;
   classe: { nom: string };
   dateInscription: string;
+  documentsSoumis: Array<{
+    id: string;
+    fileUrl: string;
+    documentRequis: { nom: string };
+  }>;
 }
 
 interface EleveEnRetard {
@@ -213,6 +218,22 @@ export default function DashboardPage() {
                     <p className="text-xs text-ink-400 mt-1">
                       {dossier.classe.nom}
                     </p>
+                    {dossier.documentsSoumis.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {dossier.documentsSoumis.map((doc) => (
+                          <a
+                            key={doc.id}
+                            href={doc.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-blue-600 hover:underline inline-flex items-center gap-1 bg-blue-100 px-2 py-1 rounded-lg"
+                          >
+                            <FileCheck size={12} strokeWidth={2} />
+                            {doc.documentRequis.nom}
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center gap-2 ml-4 shrink-0">
                     <button

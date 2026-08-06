@@ -41,9 +41,15 @@ export default async function EcolePubliquePage({ params }: PageProps) {
 
       {/* En-tête école */}
       <section className="px-6 pt-12 pb-8 max-w-5xl mx-auto text-center animate-fade-in">
-        <div className="w-20 h-20 rounded-2xl bg-blue-100 border border-blue-500/20 flex items-center justify-center mx-auto mb-6 text-blue-600">
-          <Building2 size={32} strokeWidth={1.75} />
-        </div>
+        {ecole.logoUrl ? (
+          <div className="w-20 h-20 rounded-2xl border border-border overflow-hidden mx-auto mb-6 shadow-sm">
+            <img src={ecole.logoUrl} alt={ecole.nomPublic || ecole.nom} className="w-full h-full object-cover" />
+          </div>
+        ) : (
+          <div className="w-20 h-20 rounded-2xl bg-blue-100 border border-blue-500/20 flex items-center justify-center mx-auto mb-6 text-blue-600">
+            <Building2 size={32} strokeWidth={1.75} />
+          </div>
+        )}
         <h1 className="text-3xl font-bold text-ink-900 mb-2">
           {ecole.nomPublic || ecole.nom}
         </h1>

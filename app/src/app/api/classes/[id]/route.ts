@@ -26,6 +26,9 @@ export async function GET(
             echeances: {
               orderBy: { dateLimite: "asc" },
             },
+            documentsSoumis: {
+              include: { documentRequis: { select: { nom: true } } },
+            },
           },
           orderBy: { dateInscription: "desc" },
         },

@@ -7,7 +7,7 @@ import { envoyerSMSReceptionDossier } from "@/lib/sms";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { classeSlug, nomEleve, nomParent, telephoneParent } = body;
+    const { classeSlug, nomEleve, nomParent, telephoneParent, genre, dateNaissance, documents } = body;
 
     if (!classeSlug || !nomEleve || !nomParent || !telephoneParent) {
       return NextResponse.json(
@@ -43,8 +43,23 @@ export async function POST(request: NextRequest) {
         nomEleve,
         nomParent,
         telephoneParent,
+        genre: genre || null,
+        dateNaissance: dateNaissance ? new Date(dateNaissance) : null,
         lienSuiviUnique,
         statut: "en_attente_confirmation",
+        ...(Array.isArray(documents) && documents.length > 0
+          ? {
+              documentsSoumis: {
+                create: documents
+                  .filter((d: any) => d?.documentRequisId && d?.fileUrl)
+                  .map((d: any) => ({
+                    documentRequisId: d.documentRequisId,
+                    fileUrl: d.fileUrl,
+                    nomFichier: d.nomFichier || "document",
+                  })),
+              },
+            }
+          : {}),
       },
     });
 

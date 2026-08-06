@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { formatMontant, couleurStatut, labelStatut } from "@/lib/utils";
-import { X, GraduationCap } from "lucide-react";
+import { X, GraduationCap, Trash2 } from "lucide-react";
 
 interface Eleve {
   id: string;
   nomEleve: string;
   nomParent: string;
   telephoneParent: string;
+  genre: string | null;
   identifiantCourt: string | null;
   statut: string;
   classe: { nom: string };
@@ -26,6 +27,7 @@ export default function ElevesPage() {
   const [classes, setClasses] = useState<Classe[]>([]);
   const [loading, setLoading] = useState(true);
   const [filtre, setFiltre] = useState("tous");
+  const [filtreGenre, setFiltreGenre] = useState("tous");
 
   // Modal d'ajout d'élève
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,6 +39,23 @@ export default function ElevesPage() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const handleDelete = async (id: string, nomEleve: string) => {
+    if (!confirm(`Supprimer définitivement ${nomEleve} ? Cette action est irréversible et supprimera aussi son historique de paiement.`)) {
+      return;
+    }
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/eleves/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Erreur lors de la suppression");
+      fetchEleves();
+    } catch (err) {
+      alert("Impossible de supprimer cet élève. Réessayez.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
 
   const fetchEleves = () => {
@@ -83,6 +102,7 @@ export default function ElevesPage() {
 
 
   const filtres = eleves.filter((e) => {
+    if (filtreGenre !== "tous" && e.genre !== filtreGenre) return false;
     if (filtre === "tous") return true;
     if (filtre === "confirme") return e.statut === "confirme";
     if (filtre === "en_attente")
@@ -218,7 +238,7 @@ export default function ElevesPage() {
 
 
       {/* Filtres */}
-      <div className="flex gap-2 mb-6 flex-wrap">
+      <div className="flex gap-2 mb-6 flex-wrap items-center">
         {[
           { key: "tous", label: "Tous" },
           { key: "confirme", label: "Confirmés" },
@@ -237,6 +257,16 @@ export default function ElevesPage() {
             {f.label}
           </button>
         ))}
+        <select
+          value={filtreGenre}
+          onChange={(e) => setFiltreGenre(e.target.value)}
+          className="glass-select ml-auto"
+          style={{ width: "auto", minWidth: "140px" }}
+        >
+          <option value="tous">Tous les genres</option>
+          <option value="M">Masculin</option>
+          <option value="F">Féminin</option>
+        </select>
       </div>
 
       {/* Tableau */}
@@ -255,11 +285,13 @@ export default function ElevesPage() {
                 <tr>
                   <th>ID</th>
                   <th>Élève</th>
+                  <th>Genre</th>
                   <th>Parent</th>
                   <th>Téléphone</th>
                   <th>Classe</th>
                   <th>Paiements</th>
                   <th>Statut</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -281,6 +313,9 @@ export default function ElevesPage() {
                       </td>
                       <td className="font-medium text-ink-900">
                         {eleve.nomEleve}
+                      </td>
+                      <td className="text-ink-400 text-sm">
+                        {eleve.genre === "M" ? "Masculin" : eleve.genre === "F" ? "Féminin" : "—"}
                       </td>
                       <td className="text-ink-600">{eleve.nomParent}</td>
                       <td className="text-ink-400 font-mono text-sm">
@@ -332,6 +367,21 @@ export default function ElevesPage() {
                             En cours
                           </span>
                         )}
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => handleDelete(eleve.id, eleve.nomEleve)}
+                          disabled={deletingId === eleve.id}
+                          className="text-ink-400 hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-500/10 disabled:opacity-50"
+                          title="Supprimer cet élève"
+                          id={`btn-delete-${eleve.id}`}
+                        >
+                          {deletingId === eleve.id ? (
+                            <span className="spinner-dark" style={{ width: 14, height: 14 }} />
+                          ) : (
+                            <Trash2 size={16} strokeWidth={2} />
+                          )}
+                        </button>
                       </td>
                     </tr>
                   );

@@ -55,6 +55,9 @@ export async function GET() {
       },
       include: {
         classe: { select: { nom: true } },
+        documentsSoumis: {
+          include: { documentRequis: { select: { nom: true } } },
+        },
       },
       orderBy: { dateInscription: "desc" },
       take: 10,
