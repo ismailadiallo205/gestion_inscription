@@ -64,17 +64,19 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET /api/ecoles — Recherche écoles (pour la page d'accueil)
+// GET /api/ecoles — Recherche écoles (pour la page d'accueil et l'annuaire public)
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const q = searchParams.get("q") || "";
     const ville = searchParams.get("ville") || "";
     const type = searchParams.get("type") || "";
+    const niveau = searchParams.get("niveau") || "";
 
     const ecoles = await prisma.ecole.findMany({
       where: {
         visibleRecherche: true,
+        actif: true,
         ...(q && {
           OR: [
             { nom: { contains: q } },
@@ -83,19 +85,41 @@ export async function GET(request: NextRequest) {
         }),
         ...(ville && { ville: { contains: ville } }),
         ...(type && { type }),
+        // Si un niveau est demandé, ne garder que les écoles qui ont
+        // au moins une classe active à ce niveau précis
+        ...(niveau && {
+          classes: {
+            some: { statut: "actif", niveauStandard: niveau },
+          },
+        }),
       },
       select: {
         id: true,
         nom: true,
         nomPublic: true,
+        logoUrl: true,
         slug: true,
         ville: true,
         type: true,
+        classes: {
+          where: {
+            statut: "actif",
+            ...(niveau && { niveauStandard: niveau }),
+          },
+          select: {
+            id: true,
+            nom: true,
+            niveauStandard: true,
+            slugInscription: true,
+            montantMensualite: true,
+          },
+          orderBy: { nom: "asc" },
+        },
         _count: {
           select: { classes: { where: { statut: "actif" } } },
         },
       },
-      take: 20,
+      take: 30,
     });
 
     return NextResponse.json(ecoles);

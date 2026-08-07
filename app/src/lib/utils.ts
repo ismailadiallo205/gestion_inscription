@@ -88,6 +88,10 @@ export function calculerStatutEcheance(
  * Classe les niveaux scolaires
  */
 export const NIVEAUX_STANDARD = [
+  "Crèche",
+  "Petite Section",
+  "Moyenne Section",
+  "Grande Section",
   "CI",
   "CP",
   "CE1",
@@ -98,10 +102,22 @@ export const NIVEAUX_STANDARD = [
   "5e",
   "4e",
   "3e",
-  "2nde",
-  "1ere",
-  "Tle",
+  "2nde L",
+  "2nde S",
+  "1ere L",
+  "1ere S",
+  "Tle L",
+  "Tle S",
   "Autre",
+] as const;
+
+// Même liste, groupée par cycle — pour un <select> avec <optgroup>
+export const NIVEAUX_GROUPES = [
+  { label: "Petite enfance", niveaux: ["Crèche", "Petite Section", "Moyenne Section", "Grande Section"] },
+  { label: "Primaire", niveaux: ["CI", "CP", "CE1", "CE2", "CM1", "CM2"] },
+  { label: "Collège", niveaux: ["6e", "5e", "4e", "3e"] },
+  { label: "Lycée", niveaux: ["2nde L", "2nde S", "1ere L", "1ere S", "Tle L", "Tle S"] },
+  { label: "Autre", niveaux: ["Autre"] },
 ] as const;
 
 /**

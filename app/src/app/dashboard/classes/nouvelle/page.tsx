@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { NIVEAUX_STANDARD, formatMontant } from "@/lib/utils";
+import { NIVEAUX_STANDARD, NIVEAUX_GROUPES, formatMontant } from "@/lib/utils";
 import { calculerMontantTotal } from "@/lib/echeancier";
 import { ArrowLeft, Settings, Lightbulb, FileText, Plus, X } from "lucide-react";
 
@@ -14,12 +14,12 @@ export default function NouvelleClassePage() {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   // 3 champs obligatoires
-  const [nom, setNom] = useState("");
+  const [niveauStandard, setNiveauStandard] = useState("");
+  const [section, setSection] = useState("");
   const [montantMensualite, setMontantMensualite] = useState("");
   const [nbMois, setNbMois] = useState("10");
 
   // Champs avancés (pré-remplis)
-  const [niveauStandard, setNiveauStandard] = useState("");
   const [fraisInscription, setFraisInscription] = useState("0");
   const [jourEcheanceMensuel, setJourEcheanceMensuel] = useState("5");
   const [documentsRequis, setDocumentsRequis] = useState<
@@ -47,6 +47,14 @@ export default function NouvelleClassePage() {
     e.preventDefault();
     setErreur("");
     setLoading(true);
+
+    if (!niveauStandard) {
+      setErreur("Veuillez sélectionner un niveau scolaire");
+      setLoading(false);
+      return;
+    }
+
+    const nom = section.trim() ? `${niveauStandard} ${section.trim()}` : niveauStandard;
 
     try {
       const res = await fetch("/api/classes", {
@@ -112,20 +120,47 @@ export default function NouvelleClassePage() {
           <div className="space-y-5">
             <div>
               <label
-                htmlFor="nom-classe"
+                htmlFor="niveau-classe"
                 className="block text-sm font-medium text-ink-600 mb-2"
               >
-                Nom de la classe *
+                Niveau scolaire *
+              </label>
+              <select
+                id="niveau-classe"
+                value={niveauStandard}
+                onChange={(e) => setNiveauStandard(e.target.value)}
+                className="glass-select"
+                required
+              >
+                <option value="">Sélectionner un niveau...</option>
+                {NIVEAUX_GROUPES.map((groupe) => (
+                  <optgroup key={groupe.label} label={groupe.label}>
+                    {groupe.niveaux.map((n) => (
+                      <option key={n} value={n}>{n}</option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label
+                htmlFor="section-classe"
+                className="block text-sm font-medium text-ink-600 mb-2"
+              >
+                Section / groupe <span className="text-ink-400 font-normal">(optionnel)</span>
               </label>
               <input
-                id="nom-classe"
+                id="section-classe"
                 type="text"
-                value={nom}
-                onChange={(e) => setNom(e.target.value)}
-                placeholder="Ex: 6ème A"
+                value={section}
+                onChange={(e) => setSection(e.target.value)}
+                placeholder="Ex: A, B, Groupe 1..."
                 className="glass-input"
-                required
               />
+              <p className="text-xs text-ink-400 mt-1.5">
+                Utile s'il y a plusieurs classes du même niveau (ex: 6e A, 6e B)
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -219,28 +254,6 @@ export default function NouvelleClassePage() {
 
           {showAdvanced && (
             <div className="space-y-5 mt-6 ml-9 animate-fade-in">
-              <div>
-                <label
-                  htmlFor="niveau"
-                  className="block text-sm font-medium text-ink-600 mb-2"
-                >
-                  Niveau scolaire
-                </label>
-                <select
-                  id="niveau"
-                  value={niveauStandard}
-                  onChange={(e) => setNiveauStandard(e.target.value)}
-                  className="glass-select"
-                >
-                  <option value="">Non spécifié</option>
-                  {NIVEAUX_STANDARD.map((n) => (
-                    <option key={n} value={n}>
-                      {n}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label
@@ -328,7 +341,7 @@ export default function NouvelleClassePage() {
         {/* Bouton de création */}
         <button
           type="submit"
-          disabled={loading || !nom || !montantMensualite || !nbMois}
+          disabled={loading || !niveauStandard || !montantMensualite || !nbMois}
           className="btn-primary w-full text-lg py-4"
           id="btn-create-class"
         >

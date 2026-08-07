@@ -21,7 +21,7 @@ export default async function EcolePubliquePage({ params }: PageProps) {
     },
   });
 
-  if (!ecole || !ecole.visibleRecherche) {
+  if (!ecole || !ecole.visibleRecherche || !ecole.actif) {
     notFound();
   }
 

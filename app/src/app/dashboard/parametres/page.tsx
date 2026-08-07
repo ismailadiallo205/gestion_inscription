@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Wallet, MessageSquare, Upload, Check } from "lucide-react";
+import { Wallet, MessageSquare, Upload, Check, Lock } from "lucide-react";
 
 interface ProfilEcole {
   nom: string;
@@ -20,6 +20,48 @@ export default function ParametresPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Changement de mot de passe
+  const [motDePasseActuel, setMotDePasseActuel] = useState("");
+  const [nouveauMotDePasse, setNouveauMotDePasse] = useState("");
+  const [confirmationMotDePasse, setConfirmationMotDePasse] = useState("");
+  const [erreurMotDePasse, setErreurMotDePasse] = useState("");
+  const [savingMotDePasse, setSavingMotDePasse] = useState(false);
+  const [motDePasseChange, setMotDePasseChange] = useState(false);
+
+  const handleChangerMotDePasse = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErreurMotDePasse("");
+    setMotDePasseChange(false);
+
+    if (nouveauMotDePasse !== confirmationMotDePasse) {
+      setErreurMotDePasse("Les deux mots de passe ne correspondent pas");
+      return;
+    }
+
+    setSavingMotDePasse(true);
+    try {
+      const res = await fetch("/api/ecoles/moi/mot-de-passe", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ motDePasseActuel, nouveauMotDePasse }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setErreurMotDePasse(data.error || "Erreur lors du changement de mot de passe");
+        return;
+      }
+      setMotDePasseActuel("");
+      setNouveauMotDePasse("");
+      setConfirmationMotDePasse("");
+      setMotDePasseChange(true);
+      setTimeout(() => setMotDePasseChange(false), 3000);
+    } catch {
+      setErreurMotDePasse("Une erreur est survenue");
+    } finally {
+      setSavingMotDePasse(false);
+    }
+  };
 
   useEffect(() => {
     fetch("/api/ecoles/moi")
@@ -193,6 +235,75 @@ export default function ParametresPage() {
             )}
           </button>
         </div>
+      </div>
+
+      {/* Sécurité — mot de passe */}
+      <div className="glass-card-static p-8 mb-6">
+        <h2 className="text-lg font-semibold text-ink-900 mb-2 flex items-center gap-2">
+          <Lock size={18} strokeWidth={2} /> Sécurité
+        </h2>
+        <p className="text-sm text-ink-400 mb-6">
+          Changez le mot de passe de connexion à votre espace école
+        </p>
+
+        <form onSubmit={handleChangerMotDePasse} className="space-y-4 max-w-md">
+          {erreurMotDePasse && (
+            <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+              {erreurMotDePasse}
+            </div>
+          )}
+          <div>
+            <label className="block text-sm font-medium text-ink-600 mb-2">
+              Mot de passe actuel
+            </label>
+            <input
+              type="password"
+              required
+              className="glass-input"
+              value={motDePasseActuel}
+              onChange={(e) => setMotDePasseActuel(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-ink-600 mb-2">
+              Nouveau mot de passe
+            </label>
+            <input
+              type="password"
+              required
+              minLength={6}
+              className="glass-input"
+              value={nouveauMotDePasse}
+              onChange={(e) => setNouveauMotDePasse(e.target.value)}
+            />
+            <p className="text-xs text-ink-400 mt-1.5">Au moins 6 caractères</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-ink-600 mb-2">
+              Confirmer le nouveau mot de passe
+            </label>
+            <input
+              type="password"
+              required
+              className="glass-input"
+              value={confirmationMotDePasse}
+              onChange={(e) => setConfirmationMotDePasse(e.target.value)}
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={savingMotDePasse}
+            className="btn-primary inline-flex items-center gap-2 disabled:opacity-50"
+          >
+            {savingMotDePasse ? (
+              <span className="spinner" />
+            ) : motDePasseChange ? (
+              <><Check size={16} strokeWidth={2} /> Mot de passe modifié</>
+            ) : (
+              "Changer le mot de passe"
+            )}
+          </button>
+        </form>
       </div>
 
       {/* Wave */}
