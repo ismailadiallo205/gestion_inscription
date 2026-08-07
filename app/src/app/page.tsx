@@ -3,7 +3,15 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, MapPin, Globe2, Landmark, Zap, Wallet, MessageSquare, ArrowRight, Building2 } from "lucide-react";
-import { formatMontant } from "@/lib/utils";
+import { formatMontant, NIVEAUX_STANDARD } from "@/lib/utils";
+
+interface ClasseResultat {
+  id: string;
+  nom: string;
+  niveauStandard: string | null;
+  slugInscription: string;
+  montantMensualite: number;
+}
 
 interface Ecole {
   id: string;
@@ -12,6 +20,7 @@ interface Ecole {
   slug: string;
   ville: string | null;
   type: string;
+  classes: ClasseResultat[];
   _count: { classes: number };
 }
 
@@ -19,6 +28,7 @@ export default function HomePage() {
   const [query, setQuery] = useState("");
   const [ville, setVille] = useState("");
   const [type, setType] = useState("");
+  const [niveau, setNiveau] = useState("");
   const [ecoles, setEcoles] = useState<Ecole[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -31,6 +41,7 @@ export default function HomePage() {
       if (query) params.set("q", query);
       if (ville) params.set("ville", ville);
       if (type) params.set("type", type);
+      if (niveau) params.set("niveau", niveau);
 
       const res = await fetch(`/api/ecoles?${params}`);
       const data = await res.json();
@@ -55,6 +66,9 @@ export default function HomePage() {
           </Link>
           <Link href="/suivi" className="text-sm text-ink-600 hover:text-blue-600 transition-colors font-medium">
             Suivre mon dossier
+          </Link>
+          <Link href="/connexion-eleve" className="text-sm text-ink-600 hover:text-blue-600 transition-colors font-medium">
+            J&apos;ai un identifiant
           </Link>
           <Link href="/connexion" className="btn-secondary btn-sm text-sm">
             Connexion école
@@ -117,12 +131,25 @@ export default function HomePage() {
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="glass-select sm:w-44"
+              className="glass-select sm:w-40"
               id="search-type"
             >
               <option value="">Tous les types</option>
               <option value="presentiel">Présentiel</option>
               <option value="en_ligne">En ligne</option>
+            </select>
+            <select
+              value={niveau}
+              onChange={(e) => setNiveau(e.target.value)}
+              className="glass-select sm:w-40"
+              id="search-niveau"
+            >
+              <option value="">Tous les niveaux</option>
+              {NIVEAUX_STANDARD.map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
             </select>
             <button
               onClick={rechercher}
@@ -154,54 +181,80 @@ export default function HomePage() {
           ) : (
             <div className="grid gap-4 stagger-children">
               {ecoles.map((ecole) => (
-                <Link
+                <div
                   key={ecole.id}
-                  href={`/ecole/${ecole.slug}`}
-                  className="glass-card p-6 flex items-center justify-between group"
+                  className="glass-card p-6"
                   id={`ecole-${ecole.slug}`}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "var(--color-blue-100)", color: "var(--color-blue-600)" }}>
-                      <Building2 size={22} strokeWidth={1.75} />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg transition-colors" style={{ color: "var(--color-ink-900)" }}>
-                        {ecole.nomPublic || ecole.nom}
-                      </h3>
-                      <div className="flex items-center gap-3 mt-1">
-                        {ecole.ville && (
-                          <span className="text-sm flex items-center gap-1" style={{ color: "var(--color-ink-600)" }}>
-                            <MapPin size={13} strokeWidth={2} />
-                            {ecole.ville}
-                          </span>
-                        )}
-                        <span className="text-sm flex items-center gap-1" style={{ color: "var(--color-ink-400)" }}>
-                          {ecole.type === "en_ligne" ? (
-                            <>
-                              <Globe2 size={13} strokeWidth={2} /> En ligne
-                            </>
-                          ) : (
-                            <>
-                              <Landmark size={13} strokeWidth={2} /> Présentiel
-                            </>
+                  <Link
+                    href={`/ecole/${ecole.slug}`}
+                    className="flex items-center justify-between group"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "var(--color-blue-100)", color: "var(--color-blue-600)" }}>
+                        <Building2 size={22} strokeWidth={1.75} />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg transition-colors" style={{ color: "var(--color-ink-900)" }}>
+                          {ecole.nomPublic || ecole.nom}
+                        </h3>
+                        <div className="flex items-center gap-3 mt-1">
+                          {ecole.ville && (
+                            <span className="text-sm flex items-center gap-1" style={{ color: "var(--color-ink-600)" }}>
+                              <MapPin size={13} strokeWidth={2} />
+                              {ecole.ville}
+                            </span>
                           )}
-                        </span>
+                          <span className="text-sm flex items-center gap-1" style={{ color: "var(--color-ink-400)" }}>
+                            {ecole.type === "en_ligne" ? (
+                              <>
+                                <Globe2 size={13} strokeWidth={2} /> En ligne
+                              </>
+                            ) : (
+                              <>
+                                <Landmark size={13} strokeWidth={2} /> Présentiel
+                              </>
+                            )}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="badge" style={{ background: "var(--color-blue-100)", color: "var(--color-blue-700)" }}>
-                      {ecole._count.classes} classe
-                      {ecole._count.classes > 1 ? "s" : ""}
-                    </span>
-                    <div
-                      className="mt-2 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-end gap-1"
-                      style={{ color: "var(--color-blue-600)" }}
-                    >
-                      Voir les classes <ArrowRight size={14} strokeWidth={2} />
+                    <div className="text-right">
+                      <span className="badge" style={{ background: "var(--color-blue-100)", color: "var(--color-blue-700)" }}>
+                        {ecole._count.classes} classe
+                        {ecole._count.classes > 1 ? "s" : ""}
+                      </span>
+                      {!niveau && (
+                        <div
+                          className="mt-2 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-end gap-1"
+                          style={{ color: "var(--color-blue-600)" }}
+                        >
+                          Voir les classes <ArrowRight size={14} strokeWidth={2} />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </Link>
+                  </Link>
+
+                  {/* Si un niveau est filtré, montrer directement les classes correspondantes */}
+                  {niveau && ecole.classes.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-border flex flex-wrap gap-2">
+                      {ecole.classes.map((classe) => (
+                        <Link
+                          key={classe.id}
+                          href={`/ecole/${ecole.slug}/${classe.slugInscription}`}
+                          className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border hover:border-blue-500/40 transition-colors text-sm"
+                          style={{ background: "var(--color-surface-soft)" }}
+                        >
+                          <span style={{ color: "var(--color-ink-900)" }}>{classe.nom}</span>
+                          <span style={{ color: "var(--color-ink-400)" }}>
+                            · {formatMontant(classe.montantMensualite)}/mois
+                          </span>
+                          <ArrowRight size={13} strokeWidth={2} style={{ color: "var(--color-blue-600)" }} />
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           )}
