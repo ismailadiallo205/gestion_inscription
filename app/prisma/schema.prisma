@@ -32,6 +32,7 @@ model Ecole {
   slug                  String    @unique
   waveBusinessApiKey    String?
   waveActivationStatut  String    @default("en_attente") // en_attente | actif
+  actif                 Boolean   @default(true) // false = école suspendue par le super-admin
   visibleRecherche      Boolean   @default(true)
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt

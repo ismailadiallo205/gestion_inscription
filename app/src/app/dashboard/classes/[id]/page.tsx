@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { formatMontant, formatDate, labelStatut, couleurStatut } from "@/lib/utils";
-import { ArrowLeft, Check, Copy, ClipboardList, X, GraduationCap, FileCheck } from "lucide-react";
+import { ArrowLeft, Check, Copy, ClipboardList, X, GraduationCap, FileCheck, Trash2, Plus } from "lucide-react";
 
 interface ClasseDetail {
   id: string;
@@ -17,6 +17,7 @@ interface ClasseDetail {
   jourEcheanceMensuel: number;
   statut: string;
   ecole: { slug: string; nom: string };
+  documentsRequis: Array<{ id: string; nom: string; obligatoire: boolean }>;
   inscriptions: Array<{
     id: string;
     nomEleve: string;
@@ -46,6 +47,37 @@ export default function ClasseDetailPage() {
   const [classe, setClasse] = useState<ClasseDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [nouveauDoc, setNouveauDoc] = useState("");
+  const [ajoutDocEnCours, setAjoutDocEnCours] = useState(false);
+
+  const reloadClasse = () => {
+    fetch(`/api/classes/${params.id}`)
+      .then((res) => res.json())
+      .then(setClasse)
+      .catch(console.error);
+  };
+
+  const ajouterDocument = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nouveauDoc.trim()) return;
+    setAjoutDocEnCours(true);
+    try {
+      await fetch(`/api/classes/${params.id}/documents`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nom: nouveauDoc.trim(), obligatoire: true }),
+      });
+      setNouveauDoc("");
+      reloadClasse();
+    } finally {
+      setAjoutDocEnCours(false);
+    }
+  };
+
+  const supprimerDocument = async (docId: string) => {
+    await fetch(`/api/classes/${params.id}/documents/${docId}`, { method: "DELETE" });
+    reloadClasse();
+  };
 
   useEffect(() => {
     fetch(`/api/classes/${params.id}`)
@@ -144,6 +176,53 @@ export default function ClasseDetailPage() {
             ? `${window.location.origin}/ecole/${classe.ecole.slug}/${classe.slugInscription}`
             : `/ecole/${classe.ecole.slug}/${classe.slugInscription}`}
         </code>
+      </div>
+
+      {/* Documents requis à l'inscription */}
+      <div className="glass-card-static p-6 mb-6">
+        <h2 className="text-lg font-semibold text-ink-900 mb-1 flex items-center gap-2">
+          <FileCheck size={18} strokeWidth={2} /> Documents requis à l'inscription
+        </h2>
+        <p className="text-sm text-ink-400 mb-4">
+          Les parents devront fournir ces documents (PNG, JPEG ou PDF) en remplissant le formulaire.
+        </p>
+
+        {classe.documentsRequis.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            {classe.documentsRequis.map((doc) => (
+              <span
+                key={doc.id}
+                className="inline-flex items-center gap-2 bg-surface-soft border border-border px-3 py-1.5 rounded-lg text-sm text-ink-600"
+              >
+                {doc.nom}
+                <button
+                  onClick={() => supprimerDocument(doc.id)}
+                  className="text-ink-400 hover:text-red-500 transition-colors"
+                  title="Retirer ce document"
+                >
+                  <Trash2 size={13} strokeWidth={2} />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+
+        <form onSubmit={ajouterDocument} className="flex gap-2">
+          <input
+            type="text"
+            className="glass-input flex-1"
+            placeholder="Ex: Extrait de naissance, Bulletin précédent..."
+            value={nouveauDoc}
+            onChange={(e) => setNouveauDoc(e.target.value)}
+          />
+          <button
+            type="submit"
+            disabled={ajoutDocEnCours || !nouveauDoc.trim()}
+            className="btn-secondary btn-sm inline-flex items-center gap-1.5 disabled:opacity-50 shrink-0"
+          >
+            <Plus size={14} strokeWidth={2} /> Ajouter
+          </button>
+        </form>
       </div>
 
       {/* Dossiers en attente */}

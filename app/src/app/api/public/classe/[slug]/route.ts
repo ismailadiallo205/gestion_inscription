@@ -20,7 +20,7 @@ export async function GET(
         slugInscription: true,
         statut: true,
         ecole: {
-          select: { nom: true, nomPublic: true, logoUrl: true, slug: true },
+          select: { nom: true, nomPublic: true, logoUrl: true, slug: true, actif: true },
         },
         documentsRequis: {
           select: { id: true, nom: true, obligatoire: true },
@@ -29,7 +29,7 @@ export async function GET(
       },
     });
 
-    if (!classe || classe.statut !== "actif") {
+    if (!classe || classe.statut !== "actif" || !classe.ecole.actif) {
       return NextResponse.json(
         { error: "Classe non trouvée ou inactive" },
         { status: 404 }

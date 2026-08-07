@@ -32,6 +32,7 @@ export async function GET(
           },
           orderBy: { dateInscription: "desc" },
         },
+        documentsRequis: { orderBy: { ordre: "asc" } },
       },
     });
 

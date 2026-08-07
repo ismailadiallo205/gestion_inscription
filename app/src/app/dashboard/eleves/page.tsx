@@ -10,6 +10,7 @@ interface Eleve {
   nomParent: string;
   telephoneParent: string;
   genre: string | null;
+  dateNaissance: string | null;
   identifiantCourt: string | null;
   statut: string;
   classe: { nom: string };
@@ -286,6 +287,7 @@ export default function ElevesPage() {
                   <th>ID</th>
                   <th>Élève</th>
                   <th>Genre</th>
+                  <th>Date de naissance</th>
                   <th>Parent</th>
                   <th>Téléphone</th>
                   <th>Classe</th>
@@ -316,6 +318,11 @@ export default function ElevesPage() {
                       </td>
                       <td className="text-ink-400 text-sm">
                         {eleve.genre === "M" ? "Masculin" : eleve.genre === "F" ? "Féminin" : "—"}
+                      </td>
+                      <td className="text-ink-400 text-sm">
+                        {eleve.dateNaissance
+                          ? new Date(eleve.dateNaissance).toLocaleDateString("fr-FR")
+                          : "—"}
                       </td>
                       <td className="text-ink-600">{eleve.nomParent}</td>
                       <td className="text-ink-400 font-mono text-sm">

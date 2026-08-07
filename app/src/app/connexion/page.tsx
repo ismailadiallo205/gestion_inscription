@@ -25,7 +25,11 @@ export default function ConnexionPage() {
       });
 
       if (result?.error) {
-        setErreur("Email ou mot de passe incorrect");
+        if (result.error === "COMPTE_SUSPENDU") {
+          setErreur("Ce compte a été suspendu. Contactez l'administration de la plateforme.");
+        } else {
+          setErreur("Email ou mot de passe incorrect");
+        }
       } else {
         router.push("/dashboard");
       }

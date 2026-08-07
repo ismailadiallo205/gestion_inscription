@@ -23,6 +23,9 @@ export const authOptions: AuthOptions = {
         if (ecole) {
           const motDePasseValide = await compare(credentials.motDePasse, ecole.motDePasseHash);
           if (!motDePasseValide) return null;
+          if (!ecole.actif) {
+            throw new Error("COMPTE_SUSPENDU");
+          }
           return { id: ecole.id, email: ecole.email, name: ecole.nom, role: "ECOLE" };
         }
 

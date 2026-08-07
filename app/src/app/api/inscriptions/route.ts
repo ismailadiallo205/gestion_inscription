@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       include: { ecole: true },
     });
 
-    if (!classe || classe.statut !== "actif") {
+    if (!classe || classe.statut !== "actif" || !classe.ecole.actif) {
       return NextResponse.json(
         { error: "Classe non trouvée ou inactive" },
         { status: 404 }

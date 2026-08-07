@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { X } from "lucide-react";
 
 type Ecole = {
@@ -9,6 +10,7 @@ type Ecole = {
   email: string;
   type: string;
   waveActivationStatut: string;
+  actif: boolean;
   createdAt: string;
   _count: {
     classes: number;
@@ -45,6 +47,19 @@ export default function AdminEcolesPage() {
   useEffect(() => {
     fetchEcoles();
   }, []);
+
+  const toggleActif = async (ecole: Ecole, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const action = ecole.actif ? "suspendre" : "réactiver";
+    if (!confirm(`Voulez-vous vraiment ${action} "${ecole.nom}" ?`)) return;
+    await fetch(`/api/admin/ecoles/${ecole.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ actif: !ecole.actif }),
+    });
+    fetchEcoles();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -207,13 +222,15 @@ export default function AdminEcolesPage() {
                 <th className="px-6 py-4 font-medium">Contact</th>
                 <th className="px-6 py-4 font-medium">Classes</th>
                 <th className="px-6 py-4 font-medium">Intégration Wave</th>
+                <th className="px-6 py-4 font-medium">Statut</th>
                 <th className="px-6 py-4 font-medium">Date d'inscription</th>
+                <th className="px-6 py-4 font-medium"></th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-ink-400">
+                  <td colSpan={7} className="px-6 py-8 text-center text-ink-400">
                     <div className="flex justify-center mb-2">
                       <div className="spinner border-red-500 border-t-red-200" style={{ width: 24, height: 24 }} />
                     </div>
@@ -222,7 +239,7 @@ export default function AdminEcolesPage() {
                 </tr>
               ) : ecoles.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-ink-400">
+                  <td colSpan={7} className="px-6 py-8 text-center text-ink-400">
                     Aucune école inscrite.
                   </td>
                 </tr>
@@ -230,10 +247,12 @@ export default function AdminEcolesPage() {
                 ecoles.map((ecole) => (
                   <tr
                     key={ecole.id}
-                    className="border-b border-border hover:bg-surface-soft transition-colors"
+                    className={`border-b border-border hover:bg-surface-soft transition-colors ${!ecole.actif ? "opacity-50" : ""}`}
                   >
                     <td className="px-6 py-4">
-                      <div className="font-medium text-ink-900">{ecole.nom}</div>
+                      <Link href={`/admin/ecoles/${ecole.id}`} className="font-medium text-ink-900 hover:text-blue-600 transition-colors">
+                        {ecole.nom}
+                      </Link>
                       <div className="text-xs text-ink-400 capitalize">{ecole.type.replace("_", " ")}</div>
                     </td>
                     <td className="px-6 py-4">{ecole.email}</td>
@@ -249,8 +268,31 @@ export default function AdminEcolesPage() {
                         {ecole.waveActivationStatut === "actif" ? "Actif" : "En attente"}
                       </span>
                     </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-xs font-medium border ${
+                          ecole.actif
+                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                            : "bg-red-500/10 text-red-400 border-red-500/20"
+                        }`}
+                      >
+                        {ecole.actif ? "Active" : "Suspendue"}
+                      </span>
+                    </td>
                     <td className="px-6 py-4 text-ink-400">
                       {new Date(ecole.createdAt).toLocaleDateString("fr-FR")}
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={(e) => toggleActif(ecole, e)}
+                        className={`text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors ${
+                          ecole.actif
+                            ? "border-red-500/20 text-red-400 hover:bg-red-500/10"
+                            : "border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/10"
+                        }`}
+                      >
+                        {ecole.actif ? "Suspendre" : "Réactiver"}
+                      </button>
                     </td>
                   </tr>
                 ))
