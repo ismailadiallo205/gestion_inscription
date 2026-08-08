@@ -53,11 +53,16 @@ export default function AdminEcolesPage() {
     e.stopPropagation();
     const action = ecole.actif ? "suspendre" : "réactiver";
     if (!confirm(`Voulez-vous vraiment ${action} "${ecole.nom}" ?`)) return;
-    await fetch(`/api/admin/ecoles/${ecole.id}`, {
+    const res = await fetch(`/api/admin/ecoles/${ecole.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ actif: !ecole.actif }),
     });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      alert(data.error || `Échec de l'action "${action}" (${res.status})`);
+      return;
+    }
     fetchEcoles();
   };
 

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShieldAlert } from "lucide-react";
 
 export default function AdminConnexionPage() {
   const router = useRouter();
@@ -42,11 +41,11 @@ export default function AdminConnexionPage() {
       <div className="w-full max-w-md animate-fade-in">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-3 group">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center text-white shadow-lg shadow-red-500/20">
-              <ShieldAlert size={22} strokeWidth={2} />
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+              <span className="font-bold text-xl">S</span>
             </div>
             <span className="text-2xl font-bold text-ink-900 tracking-tight">
-              Skoo<span className="text-red-500">Pay</span> Admin
+              Skoo<span className="text-blue-600">Pay</span>
             </span>
           </Link>
           <p className="text-ink-400 mt-4 text-sm">
@@ -54,7 +53,7 @@ export default function AdminConnexionPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="glass-card-static p-8 border-red-500/20">
+        <form onSubmit={handleSubmit} className="glass-card-static p-8">
           <h1 className="text-xl font-bold text-ink-900 mb-6">Connexion super-admin</h1>
 
           {erreur && (
@@ -98,9 +97,9 @@ export default function AdminConnexionPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-6 rounded-xl font-medium py-2.5 bg-red-500 text-white hover:bg-red-600 transition-colors disabled:opacity-50 flex justify-center items-center"
+            className="btn-primary w-full mt-6"
           >
-            {loading ? <span className="spinner border-red-300 border-t-white" /> : "Se connecter"}
+            {loading ? <span className="spinner" /> : "Se connecter"}
           </button>
 
           <p className="text-center text-sm text-ink-400 mt-6">

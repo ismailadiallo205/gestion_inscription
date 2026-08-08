@@ -53,7 +53,7 @@ export default function AdminLayout({
         <div className="p-6">
           <Link href="/admin" className="flex items-center gap-2">
             <img src="/logo.png" alt="EduPay" className="h-8 w-auto object-contain" />
-            <span className="text-lg font-bold text-red-400 tracking-tight">
+            <span className="text-lg font-bold text-blue-600 tracking-tight">
               Admin
             </span>
           </Link>
@@ -68,7 +68,7 @@ export default function AdminLayout({
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                   isActive
-                    ? "bg-red-500/10 text-red-400 font-medium"
+                    ? "bg-blue-100 text-blue-600 font-medium"
                     : "text-ink-400 hover:bg-surface-soft hover:text-ink-900"
                 }`}
               >
@@ -90,7 +90,7 @@ export default function AdminLayout({
           </div>
           <button
             onClick={() => signOut({ callbackUrl: "/admin/connexion" })}
-            className="flex items-center gap-2 px-4 py-2 w-full text-sm text-ink-400 hover:text-red-400 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 w-full text-sm text-ink-400 hover:text-blue-600 transition-colors"
           >
             <LogOut size={16} strokeWidth={2} /> Déconnexion
           </button>
@@ -103,11 +103,11 @@ export default function AdminLayout({
         <header className="md:hidden flex items-center justify-between p-4 border-b border-border bg-surface/50 sticky top-0 z-20 backdrop-blur-md">
           <div className="flex items-center gap-2">
             <img src="/logo.png" alt="EduPay" className="h-7 w-auto object-contain" />
-            <span className="font-bold text-red-400 tracking-tight">Admin</span>
+            <span className="font-bold text-blue-600 tracking-tight">Admin</span>
           </div>
           <button
             onClick={() => signOut({ callbackUrl: "/admin/connexion" })}
-            className="text-xs font-medium text-ink-400 hover:text-red-400"
+            className="text-xs font-medium text-ink-400 hover:text-blue-600"
           >
             Déconnexion
           </button>
@@ -123,7 +123,7 @@ export default function AdminLayout({
                 href={item.href}
                 className={`whitespace-nowrap px-4 py-2 rounded-xl text-sm transition-all ${
                   isActive
-                    ? "bg-red-500/10 text-red-400 font-medium"
+                    ? "bg-blue-100 text-blue-600 font-medium"
                     : "bg-surface-soft/50 text-ink-400"
                 }`}
               >
