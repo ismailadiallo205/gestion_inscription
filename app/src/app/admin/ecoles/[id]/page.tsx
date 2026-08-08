@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { formatMontant } from "@/lib/utils";
-import { ArrowLeft, Building2, GraduationCap, Wallet, BookOpen } from "lucide-react";
+import { ArrowLeft, Building2, GraduationCap, Wallet, BookOpen, Trash2 } from "lucide-react";
 
 interface EcoleDetail {
   id: string;
@@ -30,8 +30,10 @@ interface EcoleDetail {
 
 export default function AdminEcoleDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const [ecole, setEcole] = useState<EcoleDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [erreurSuppression, setErreurSuppression] = useState("");
 
   const fetchEcole = () => {
     fetch(`/api/admin/ecoles/${params.id}`)
@@ -58,6 +60,24 @@ export default function AdminEcoleDetailPage() {
       body: JSON.stringify({ actif: !ecole.actif }),
     });
     fetchEcole();
+  };
+
+  const supprimerEcole = async () => {
+    if (!ecole) return;
+    if (
+      !confirm(
+        `Supprimer définitivement "${ecole.nom}" ? Cette action est irréversible.`
+      )
+    )
+      return;
+    setErreurSuppression("");
+    const res = await fetch(`/api/admin/ecoles/${ecole.id}`, { method: "DELETE" });
+    const data = await res.json();
+    if (!res.ok) {
+      setErreurSuppression(data.error || "Erreur lors de la suppression");
+      return;
+    }
+    router.push("/admin/ecoles");
   };
 
   if (loading) {
@@ -118,8 +138,21 @@ export default function AdminEcoleDetailPage() {
           >
             {ecole.actif ? "Suspendre l'école" : "Réactiver l'école"}
           </button>
+          <button
+            onClick={supprimerEcole}
+            title="Supprimer définitivement (impossible si des classes existent)"
+            className="btn-sm rounded-lg border border-red-500/20 text-red-500 hover:bg-red-500/10 transition-colors px-3 py-2 inline-flex items-center gap-1.5"
+          >
+            <Trash2 size={14} strokeWidth={2} /> Supprimer
+          </button>
         </div>
       </div>
+
+      {erreurSuppression && (
+        <div className="mb-6 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+          {erreurSuppression}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div className="glass-card-static p-5">

@@ -61,6 +61,29 @@ export default function AdminEcolesPage() {
     fetchEcoles();
   };
 
+  const supprimerEcole = async (ecole: Ecole, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (
+      !confirm(
+        `Supprimer définitivement "${ecole.nom}" ? Cette action est irréversible.`
+      )
+    )
+      return;
+
+    const res = await fetch(`/api/admin/ecoles/${ecole.id}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.error || "Suppression impossible");
+      return;
+    }
+
+    fetchEcoles();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -283,16 +306,30 @@ export default function AdminEcolesPage() {
                       {new Date(ecole.createdAt).toLocaleDateString("fr-FR")}
                     </td>
                     <td className="px-6 py-4">
-                      <button
-                        onClick={(e) => toggleActif(ecole, e)}
-                        className={`text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors ${
-                          ecole.actif
-                            ? "border-red-500/20 text-red-400 hover:bg-red-500/10"
-                            : "border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/10"
-                        }`}
-                      >
-                        {ecole.actif ? "Suspendre" : "Réactiver"}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={(e) => toggleActif(ecole, e)}
+                          className={`text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors ${
+                            ecole.actif
+                              ? "border-red-500/20 text-red-400 hover:bg-red-500/10"
+                              : "border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/10"
+                          }`}
+                        >
+                          {ecole.actif ? "Suspendre" : "Réactiver"}
+                        </button>
+                        <button
+                          onClick={(e) => supprimerEcole(ecole, e)}
+                          disabled={ecole._count.classes > 0}
+                          title={
+                            ecole._count.classes > 0
+                              ? "Impossible : cette école a encore des classes"
+                              : "Supprimer définitivement"
+                          }
+                          className="text-xs font-medium px-3 py-1.5 rounded-lg border border-border text-ink-400 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-ink-400"
+                        >
+                          Supprimer
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

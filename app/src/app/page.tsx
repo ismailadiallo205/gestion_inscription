@@ -61,13 +61,10 @@ export default function HomePage() {
           <img src="/logo.png" alt="EduPay" className="h-10 w-auto object-contain" />
         </Link>
         <div className="flex items-center gap-3">
-          <Link href="/ecoles" className="text-sm text-ink-600 hover:text-blue-600 transition-colors font-medium">
+          <Link href="/ecoles" className="hidden sm:inline-flex text-sm text-ink-600 hover:text-blue-600 transition-colors font-medium">
             Trouver une école
           </Link>
-          <Link href="/suivi" className="text-sm text-ink-600 hover:text-blue-600 transition-colors font-medium">
-            Suivre mon dossier
-          </Link>
-          <Link href="/connexion-eleve" className="text-sm text-ink-600 hover:text-blue-600 transition-colors font-medium">
+          <Link href="/connexion-eleve" className="hidden sm:inline-flex text-sm text-ink-600 hover:text-blue-600 transition-colors font-medium">
             J&apos;ai un identifiant
           </Link>
           <Link href="/connexion" className="btn-secondary btn-sm text-sm">
