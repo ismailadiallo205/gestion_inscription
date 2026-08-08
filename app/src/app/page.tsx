@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Search, MapPin, Globe2, Landmark, Zap, Wallet, MessageSquare, ArrowRight, Building2 } from "lucide-react";
 import { formatMontant, NIVEAUX_STANDARD } from "@/lib/utils";
@@ -79,37 +79,14 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* ── Hero ──────────────────────────────────── */}
-      <section className="px-6 pt-20 pb-16 max-w-4xl mx-auto text-center">
-        <div className="animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 border border-blue-500/20 text-blue-700 text-sm font-medium mb-8">
-            <span className="w-2 h-2 rounded-full bg-blue-500" />
-            Simplicité façon Wave
-          </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-ink-900 leading-tight tracking-tight mb-6" style={{ color: "var(--color-ink-900)" }}>
-            Gérez vos inscriptions
-            <br />
-            <span style={{ color: "var(--color-blue-500)" }}>
-              sans prise de tête
-            </span>
-          </h1>
-          <p className="text-lg max-w-2xl mx-auto mb-12 leading-relaxed" style={{ color: "var(--color-ink-600)" }}>
-            Créez une classe en 3 clics. Les parents paient directement sur
-            votre compte Wave. Chaque famille suit ses paiements en un coup
-            d&apos;œil — sans jamais appeler l&apos;école.
-          </p>
-        </div>
-
-        {/* ── Barre de recherche ──────────────────── */}
-        <div
-          className="glass-card-static p-6 max-w-3xl mx-auto animate-fade-in"
-          style={{ animationDelay: "200ms" }}
-        >
+      {/* ── Barre de recherche ──────────────────── */}
+      <section className="px-6 pt-10 pb-4 max-w-3xl mx-auto">
+        <div className="glass-card-static p-6 animate-fade-in">
           <p className="text-sm mb-4 text-left font-medium flex items-center gap-2" style={{ color: "var(--color-ink-600)" }}>
             <Search size={16} strokeWidth={2} />
             Trouver une école ou un cours
           </p>
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 flex-wrap">
             <input
               type="text"
               placeholder="Nom de l'école ou du cours..."
@@ -125,7 +102,7 @@ export default function HomePage() {
               value={ville}
               onChange={(e) => setVille(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && rechercher()}
-              className="glass-input sm:w-40"
+              className="glass-input sm:w-36"
               id="search-city"
             />
             <select
@@ -160,6 +137,24 @@ export default function HomePage() {
               {loading ? <span className="spinner" /> : "Rechercher"}
             </button>
           </div>
+        </div>
+      </section>
+
+      {/* ── Hero ──────────────────────────────────── */}
+      <section className="px-6 pt-8 pb-16 max-w-4xl mx-auto text-center">
+        <div className="animate-fade-in">
+          <h1 className="text-5xl md:text-6xl font-bold text-ink-900 leading-tight tracking-tight mb-6" style={{ color: "var(--color-ink-900)" }}>
+            Gérez vos inscriptions
+            <br />
+            <span style={{ color: "var(--color-blue-500)" }}>
+              sans prise de tête
+            </span>
+          </h1>
+          <p className="text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: "var(--color-ink-600)" }}>
+            Créez une classe en 3 clics. Les parents paient directement sur
+            votre compte Wave. Chaque famille suit ses paiements en un coup
+            d&apos;œil — sans jamais appeler l&apos;école.
+          </p>
         </div>
       </section>
 
@@ -235,7 +230,6 @@ export default function HomePage() {
                     </div>
                   </Link>
 
-                  {/* Si un niveau est filtré, montrer directement les classes correspondantes */}
                   {niveau && ecole.classes.length > 0 && (
                     <div className="mt-4 pt-4 border-t border-border flex flex-wrap gap-2">
                       {ecole.classes.map((classe) => (

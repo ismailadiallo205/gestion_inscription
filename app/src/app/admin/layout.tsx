@@ -14,24 +14,17 @@ export default function AdminLayout({
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const router = useRouter();
-  const estPageConnexion = pathname === "/admin/connexion";
 
   useEffect(() => {
-    if (estPageConnexion) return;
     if (status === "unauthenticated") {
-      router.push("/admin/connexion");
+      router.push("/connexion");
     } else if (status === "authenticated") {
       const user = session?.user as any;
       if (user?.role !== "SUPER_ADMIN") {
         router.push("/dashboard");
       }
     }
-  }, [status, session, router, estPageConnexion]);
-
-  // La page de connexion admin gère son propre affichage, sans sidebar ni garde d'authentification
-  if (estPageConnexion) {
-    return <>{children}</>;
-  }
+  }, [status, session, router]);
 
   if (status === "loading" || status === "unauthenticated" || (session?.user as any)?.role !== "SUPER_ADMIN") {
     return (
@@ -89,7 +82,7 @@ export default function AdminLayout({
             </p>
           </div>
           <button
-            onClick={() => signOut({ callbackUrl: "/admin/connexion" })}
+            onClick={() => signOut({ callbackUrl: "/connexion" })}
             className="flex items-center gap-2 px-4 py-2 w-full text-sm text-ink-400 hover:text-red-400 transition-colors"
           >
             <LogOut size={16} strokeWidth={2} /> Déconnexion
@@ -106,7 +99,7 @@ export default function AdminLayout({
             <span className="font-bold text-red-400 tracking-tight">Admin</span>
           </div>
           <button
-            onClick={() => signOut({ callbackUrl: "/admin/connexion" })}
+            onClick={() => signOut({ callbackUrl: "/connexion" })}
             className="text-xs font-medium text-ink-400 hover:text-red-400"
           >
             Déconnexion

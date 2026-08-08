@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShieldAlert } from "lucide-react";
 
-export default function AdminConnexionPage() {
+export default function ConnexionPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
@@ -26,10 +25,20 @@ export default function AdminConnexionPage() {
       });
 
       if (result?.error) {
-        setErreur("Email ou mot de passe incorrect");
-      } else {
-        router.push("/admin");
+        setErreur(
+          result.error === "COMPTE_SUSPENDU"
+            ? "Ce compte a été suspendu. Contactez le support."
+            : "Email ou mot de passe incorrect"
+        );
+        return;
       }
+
+      // Le compte peut être une école ou un super-admin — on redirige
+      // vers le bon tableau de bord selon le rôle renvoyé par la session.
+      const session = await getSession();
+      const role = (session?.user as any)?.role;
+
+      router.push(role === "SUPER_ADMIN" ? "/admin" : "/dashboard");
     } catch {
       setErreur("Une erreur est survenue");
     } finally {
@@ -38,24 +47,21 @@ export default function AdminConnexionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-paper flex items-center justify-center p-6">
+    <div className="min-h-screen hero-gradient flex items-center justify-center p-6">
       <div className="w-full max-w-md animate-fade-in">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-3 group">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center text-white shadow-lg shadow-red-500/20">
-              <ShieldAlert size={22} strokeWidth={2} />
-            </div>
-            <span className="text-2xl font-bold text-ink-900 tracking-tight">
-              Skoo<span className="text-red-500">Pay</span> Admin
-            </span>
+          <Link href="/" className="inline-flex items-center gap-2 mb-6">
+            <img src="/logo.png" alt="EduPay" className="h-10 w-auto object-contain" />
           </Link>
-          <p className="text-ink-400 mt-4 text-sm">
-            Accès réservé à l&apos;administration de la plateforme
+          <p className="text-sm" style={{ color: "var(--color-ink-600)" }}>
+            Connectez-vous à votre espace
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="glass-card-static p-8 border-red-500/20">
-          <h1 className="text-xl font-bold text-ink-900 mb-6">Connexion super-admin</h1>
+        <form onSubmit={handleSubmit} className="glass-card-static p-8">
+          <h1 className="text-xl font-bold mb-6" style={{ color: "var(--color-ink-900)" }}>
+            Connexion
+          </h1>
 
           {erreur && (
             <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
@@ -73,7 +79,7 @@ export default function AdminConnexionPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@skoopay.sn"
+                placeholder="vous@ecole.sn"
                 className="glass-input"
                 required
               />
@@ -98,15 +104,15 @@ export default function AdminConnexionPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-6 rounded-xl font-medium py-2.5 bg-red-500 text-white hover:bg-red-600 transition-colors disabled:opacity-50 flex justify-center items-center"
+            className="btn-primary w-full mt-6"
           >
-            {loading ? <span className="spinner border-red-300 border-t-white" /> : "Se connecter"}
+            {loading ? <span className="spinner" /> : "Se connecter"}
           </button>
 
           <p className="text-center text-sm text-ink-400 mt-6">
-            Vous êtes une école ?{" "}
-            <Link href="/connexion" className="text-blue-600 hover:underline font-medium">
-              Connexion école
+            Pas encore de compte ?{" "}
+            <Link href="/inscription" className="text-blue-600 hover:underline font-medium">
+              Inscrire mon école
             </Link>
           </p>
         </form>
